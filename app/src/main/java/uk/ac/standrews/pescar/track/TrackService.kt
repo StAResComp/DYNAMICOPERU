@@ -22,6 +22,9 @@ import java.lang.IllegalArgumentException
 import java.util.*
 import java.util.concurrent.Executors
 
+/**
+ * Listens for location changes and writes them to the database
+ */
 class TrackService : Service() {
 
     private val LOCATION_INTERVAL: Long = 30000
@@ -31,6 +34,7 @@ class TrackService : Service() {
     private val PROVIDER: String = LocationManager.GPS_PROVIDER
     private val TAG: String = "TRACK"
 
+    //These need to be set in onCreate
     private lateinit var locationManager: LocationManager
     private lateinit var notificationManager: NotificationManager
 
@@ -61,10 +65,8 @@ class TrackService : Service() {
             provider: String, status: Int, extras: Bundle) {}
 
         private fun writeLocation() {
-            Log.d(TAG, "Writing Location")
             val db = AppDatabase.getAppDataBase(
                 this@TrackService.applicationContext)
-            Log.d(TAG, db?.trackDao().toString())
             Executors.newSingleThreadExecutor().execute {
                 var cal = Calendar.getInstance()
                 var pos = Position(
@@ -73,14 +75,15 @@ class TrackService : Service() {
                     accuracy = lastLocation.accuracy,
                     timestamp = cal.time
                 )
-                Log.d(TAG, pos.toString())
-                Log.d(TAG, "Persisting Location")
-                Log.d(TAG, db.trackDao().insertPosition(pos).toString())
             }
         }
 
     }
 
+    /**
+     * Runs on service creation. Initialises managers, requests location updates and notifies that location tracking has
+     * started
+     */
     override fun onCreate() {
         super.onCreate()
 
