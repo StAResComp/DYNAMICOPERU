@@ -1,0 +1,38 @@
+<resources>
+
+    <string name="app_name">Pescar</string>
+
+    <!-- Screen titles -->
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+    <!-- Fishing activity details -->
+    <string name="tow_1">Tow 1</string>
+    <string name="tow_2">Tow 2</string>
+    <string name="tow_3">Tow 3</string>
+    <string name="tow_4">Tow 4</string>
+    <string name="tow_5">Tow 5</string>
+
+    <string name="weight">Wt. (kg)</string>
+
+    <string name="haul">Haul</string>
+
+    <string name="shrimp">Shrimp</string>
+    <string name="species_2">Species 2</string>
+    <string name="species_3">Species 3</string>
+    <string name="species_4">Species 4</string>
+
+    <!-- Buttons -->
+    <string name="submit">Submit</string>
+    <string name="view_map">View Map</string>
+
+    <!-- Tracking -->
+    <string name="stopped_tracking_location">Stopped tracking location</string>
+
+    <!-- Notifications -->
+    <string name="tracking_notification_channel_name">Pescar Location Tracking</string>
+    <string name="tracking_notification_title">Tracking location</string>
+    <string name="tracking_notification_text">The Pescar app is tracking your location</string>
+
+</resources>
