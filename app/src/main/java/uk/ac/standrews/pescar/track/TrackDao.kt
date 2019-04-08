@@ -29,4 +29,12 @@ interface TrackDao {
     @Query("UPDATE position SET uploaded = :timestamp WHERE id = :id")
     fun markPositionUploaded(timestamp: Date, id: Long)
 
+    /**
+     * Gets the last inserted position
+     *
+     * @return the last inserted [Position]
+     */
+    @Query("SELECT * FROM position ORDER BY id DESC LIMIT 1")
+    fun getLastPosition(): Position
+
 }

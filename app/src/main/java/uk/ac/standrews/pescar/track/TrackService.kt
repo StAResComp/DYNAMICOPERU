@@ -75,6 +75,7 @@ class TrackService : Service() {
                     accuracy = lastLocation.accuracy,
                     timestamp = cal.time
                 )
+                db.trackDao().insertPosition(pos)
             }
         }
 
