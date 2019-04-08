@@ -67,4 +67,34 @@ class TrackServiceTest {
         }
     }
 
+    @Test
+    fun test00rejection() {
+        (InstrumentationRegistry.getTargetContext().applicationContext as PescarApplication).startTrackingLocation()
+        var numRowsPre = 0
+        Executors.newSingleThreadExecutor().execute {
+            numRowsPre = db.trackDao().countPositions()
+        }
+        var l = Location(locationProvider)
+        val lat = 0.0
+        val lon = 0.0
+        val time = System.currentTimeMillis()
+        val acc = 0.0f
+        l.latitude = lat
+        l.longitude = lon
+        l.time = time
+        l.accuracy = acc
+        l.elapsedRealtimeNanos = System.nanoTime()
+        locationManager.setTestProviderLocation(locationProvider, l)
+        TimeUnit.SECONDS.sleep(10)
+        Executors.newSingleThreadExecutor().execute {
+            var pos = db.trackDao().getLastPosition()
+            var numRowsPost = db.trackDao().countPositions()
+            assert(lat != pos.latitude)
+            assert(lon != pos.longitude)
+            assert(time != pos.timestamp.time)
+            assert(acc != pos.accuracy)
+            assert(numRowsPre == numRowsPost)
+        }
+    }
+
 }

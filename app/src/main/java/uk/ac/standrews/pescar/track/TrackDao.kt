@@ -37,4 +37,12 @@ interface TrackDao {
     @Query("SELECT * FROM position ORDER BY id DESC LIMIT 1")
     fun getLastPosition(): Position
 
+    /**
+     * Counts the number of recorded positions
+     *
+     * @return the number of recorded [Position]s
+     */
+    @Query("SELECT COUNT(*) FROM position")
+    fun countPositions(): Int
+
 }

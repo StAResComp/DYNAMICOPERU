@@ -65,17 +65,20 @@ class TrackService : Service() {
             provider: String, status: Int, extras: Bundle) {}
 
         private fun writeLocation() {
-            val db = AppDatabase.getAppDataBase(
-                this@TrackService.applicationContext)
-            Executors.newSingleThreadExecutor().execute {
-                var cal = Calendar.getInstance()
-                var pos = Position(
-                    latitude = lastLocation.latitude,
-                    longitude = lastLocation.longitude,
-                    accuracy = lastLocation.accuracy,
-                    timestamp = cal.time
+            if (lastLocation.latitude != 0.0 || lastLocation.longitude != 0.0 || lastLocation.accuracy != 0.0f) {
+                val db = AppDatabase.getAppDataBase(
+                    this@TrackService.applicationContext
                 )
-                db.trackDao().insertPosition(pos)
+                Executors.newSingleThreadExecutor().execute {
+                    var cal = Calendar.getInstance()
+                    var pos = Position(
+                        latitude = lastLocation.latitude,
+                        longitude = lastLocation.longitude,
+                        accuracy = lastLocation.accuracy,
+                        timestamp = cal.time
+                    )
+                    db.trackDao().insertPosition(pos)
+                }
             }
         }
 
