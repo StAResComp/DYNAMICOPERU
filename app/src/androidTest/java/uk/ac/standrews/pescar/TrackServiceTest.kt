@@ -29,9 +29,10 @@ class TrackServiceTest {
 
     @get:Rule
     val serviceRule = ServiceTestRule()
-    lateinit var locationManager: LocationManager
-    var locationProvider = LocationManager.GPS_PROVIDER
-    lateinit var db: AppDatabase
+
+    private lateinit var locationManager: LocationManager
+    private val locationProvider = LocationManager.GPS_PROVIDER
+    private lateinit var db: AppDatabase
 
     @Before
     fun setup() {
@@ -46,7 +47,7 @@ class TrackServiceTest {
     @Test
     fun testLocationLogging() {
         (InstrumentationRegistry.getTargetContext().applicationContext as PescarApplication).startTrackingLocation()
-        var l = Location(locationProvider)
+        val l = Location(locationProvider)
         val lat = (Math.random() - 0.5) * 2 * 90
         val lon = (Math.random() - 0.5) * 2 * 180
         val time = System.currentTimeMillis()
@@ -59,7 +60,7 @@ class TrackServiceTest {
         locationManager.setTestProviderLocation(locationProvider, l)
         TimeUnit.SECONDS.sleep(10)
         Executors.newSingleThreadExecutor().execute {
-            var pos = db.trackDao().getLastPosition()
+            val pos = db.trackDao().getLastPosition()
             assert(lat == pos.latitude)
             assert(lon == pos.longitude)
             assert(time == pos.timestamp.time)
@@ -74,7 +75,7 @@ class TrackServiceTest {
         Executors.newSingleThreadExecutor().execute {
             numRowsPre = db.trackDao().countPositions()
         }
-        var l = Location(locationProvider)
+        val l = Location(locationProvider)
         val lat = 0.0
         val lon = 0.0
         val time = System.currentTimeMillis()
@@ -87,12 +88,14 @@ class TrackServiceTest {
         locationManager.setTestProviderLocation(locationProvider, l)
         TimeUnit.SECONDS.sleep(10)
         Executors.newSingleThreadExecutor().execute {
-            var pos = db.trackDao().getLastPosition()
-            var numRowsPost = db.trackDao().countPositions()
-            assert(lat != pos.latitude)
-            assert(lon != pos.longitude)
-            assert(time != pos.timestamp.time)
-            assert(acc != pos.accuracy)
+            val numRowsPost = db.trackDao().countPositions()
+            if (numRowsPost > 0) {
+                val pos = db.trackDao().getLastPosition()
+                assert(lat != pos.latitude)
+                assert(lon != pos.longitude)
+                assert(time != pos.timestamp.time)
+                assert(acc != pos.accuracy)
+            }
             assert(numRowsPre == numRowsPost)
         }
     }
