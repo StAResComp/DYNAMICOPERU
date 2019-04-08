@@ -29,20 +29,38 @@ class TodayActivity : AppCompatActivity() {
         tracker = findViewById(R.id.tracker)
         tracker.setOnCheckedChangeListener { _, isChecked ->
             var app = this@TodayActivity.application as PescarApplication
-            if (isChecked && ContextCompat.checkSelfPermission(
+            if (!isChecked) {
+                app.stopTrackingLocation()
+            }
+            else if (isChecked && ContextCompat.checkSelfPermission(
                     this@TodayActivity, Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(
                     this@TodayActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 568)
             }
-            if (isChecked) {
+            else if (isChecked && ContextCompat.checkSelfPermission(this@TodayActivity,
+                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 app.startTrackingLocation()
             }
             else {
-                app.stopTrackingLocation()
+                tracker.toggle()
             }
         }
+
+        //Navigation
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (requestCode == 568) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                (this@TodayActivity.application as PescarApplication).startTrackingLocation()
+            }
+            else {
+                tracker.toggle()
+            }
+            return
+        }
     }
 
     //Handle navigation
