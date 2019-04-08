@@ -1,10 +1,13 @@
 package uk.ac.standrews.pescar
 
+import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.*
 import android.content.Context
+import uk.ac.standrews.pescar.fishing.*
 import uk.ac.standrews.pescar.track.Position
 import uk.ac.standrews.pescar.track.TrackDao
 import java.util.Date
+import java.util.concurrent.Executors
 
 /**
  * Defines the database for the app.
@@ -13,9 +16,13 @@ import java.util.Date
  */
 @Database(
     entities = [
-        Position::class
+        Position::class,
+        Species::class,
+        Trip::class,
+        Tow::class,
+        Landed::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(DateTypeConverter::class)
@@ -25,6 +32,11 @@ abstract class AppDatabase : RoomDatabase() {
      * Database access object for location tracking data
      */
     abstract fun trackDao() : TrackDao
+
+    /**
+     * Database access object for fishing activity data
+     */
+    abstract fun fishingDao() : FishingDao
 
     companion object {
         @Volatile
@@ -39,9 +51,35 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "pescar"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .addCallback(seedDatabaseCallback(context))
+                    .build()
                 INSTANCE = instance
                 return instance
+            }
+        }
+
+        fun seedDatabaseCallback(context: Context): Callback {
+            return object : Callback() {
+                override fun onCreate(db: SupportSQLiteDatabase) {
+                    super.onCreate(db)
+                    Executors.newSingleThreadExecutor().execute {
+                        val speciesToInsert = Species.getInitialData()
+                        val fishingDao = getAppDataBase(context).fishingDao()
+                        val currentSpeciesNames = fishingDao.getSpecies()
+                        if (currentSpeciesNames.isEmpty()) {
+                            fishingDao.insertSpecies(speciesToInsert)
+                        }
+                        else {
+                            for (species in speciesToInsert) {
+                                if (!currentSpeciesNames.contains(species.name)) {
+                                    fishingDao.insertSpecies(species)
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
