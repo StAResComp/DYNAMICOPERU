@@ -46,6 +46,7 @@
                 android:text="@string/tow_1" />
 
             <EditText
+                android:id="@+id/tow_1"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -60,6 +61,7 @@
                 android:text="@string/tow_2" />
 
             <EditText
+                android:id="@+id/tow_2"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -74,6 +76,7 @@
                 android:text="@string/tow_3" />
 
             <EditText
+                android:id="@+id/tow_3"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -88,6 +91,7 @@
                 android:text="@string/tow_4" />
 
             <EditText
+                android:id="@+id/tow_4"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -102,6 +106,7 @@
                 android:text="@string/tow_5" />
 
             <EditText
+                android:id="@+id/tow_5"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -123,6 +128,7 @@
                 android:text="@string/shrimp" />
 
             <EditText
+                android:id="@+id/species_1"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -137,6 +143,7 @@
                 android:text="@string/species_2" />
 
             <EditText
+                android:id="@+id/species_2"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -151,6 +158,7 @@
                 android:text="@string/species_3" />
 
             <EditText
+                android:id="@+id/species_3"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -165,6 +173,7 @@
                 android:text="@string/species_4" />
 
             <EditText
+                android:id="@+id/species_4"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"

@@ -27,12 +27,12 @@ import java.util.concurrent.Executors
  */
 class TrackService : Service() {
 
-    private val LOCATION_INTERVAL: Long = 30000
-    private val LOCATION_DISTANCE: Float = 5f
-    private val TRACKING_NOTIFICATION_ID: Int = 568
-    private val PESCAR_TRACKING_CHANNEL: String = "pescar_tracking_channel"
-    private val PROVIDER: String = LocationManager.GPS_PROVIDER
-    private val TAG: String = "TRACK"
+    private val _locationInterval: Long = 30000
+    private val _locationDistance: Float = 5f
+    private val _trackingNotificationId: Int = 568
+    private val _pescarTrackingChannel: String = "pescar_tracking_channel"
+    private val _provider: String = LocationManager.GPS_PROVIDER
+    private val _tag: String = "TRACK"
 
     //These need to be set in onCreate
     private lateinit var locationManager: LocationManager
@@ -40,15 +40,13 @@ class TrackService : Service() {
 
     private val trackBinder: TrackBinder = TrackBinder()
 
-    private val locationListener = object : LocationListener {
+    var locationListener = object : LocationListener {
 
-        var lastLocation: Location = Location(PROVIDER)
+        var lastLocation: Location = Location(_provider)
 
         override fun onLocationChanged(location: Location?) {
-            if(location?.accuracy != 0f) {
-                lastLocation.set(location)
-                writeLocation()
-            }
+            lastLocation.set(location)
+            this.writeLocation()
         }
 
         //Attempt to persist location when provider is disabled
@@ -62,16 +60,17 @@ class TrackService : Service() {
         }
 
         override fun onStatusChanged(
-            provider: String, status: Int, extras: Bundle) {}
+            provider: String, status: Int, extras: Bundle) {
+        }
 
-        private fun writeLocation() {
+        fun writeLocation() {
             if (lastLocation.latitude != 0.0 || lastLocation.longitude != 0.0 || lastLocation.accuracy != 0.0f) {
                 val db = AppDatabase.getAppDataBase(
                     this@TrackService.applicationContext
                 )
                 Executors.newSingleThreadExecutor().execute {
-                    var cal = Calendar.getInstance()
-                    var pos = Position(
+                    val cal = Calendar.getInstance()
+                    val pos = Position(
                         latitude = lastLocation.latitude,
                         longitude = lastLocation.longitude,
                         accuracy = lastLocation.accuracy,
@@ -98,20 +97,20 @@ class TrackService : Service() {
 
         try {
             locationManager.requestLocationUpdates(
-                PROVIDER,
-                LOCATION_INTERVAL,
-                LOCATION_DISTANCE,
+                _provider,
+                _locationInterval,
+                _locationDistance,
                 locationListener
             )
         }
-        catch(e: java.lang.SecurityException) {
-            Log.e(TAG, "Security exception requesting location updates", e)
+        catch(e: SecurityException) {
+            Log.e(_tag, "Security exception requesting location updates", e)
         }
         catch(e: IllegalArgumentException) {
-            Log.e(TAG, "Error requesting location updates", e)
+            Log.e(_tag, "Error requesting location updates", e)
         }
 
-        startForeground(TRACKING_NOTIFICATION_ID, this.getNotification())
+        startForeground(_trackingNotificationId, this.getNotification())
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -120,23 +119,22 @@ class TrackService : Service() {
     }
 
     private fun getNotification(): Notification {
-        var notificationIntent = Intent(
+        val notificationIntent = Intent(
             this.applicationContext, TodayActivity::class.java)
-        var pendingIntent = PendingIntent.getActivity(
+        val pendingIntent = PendingIntent.getActivity(
             this.applicationContext, 0,
             notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
             notificationManager.createNotificationChannel(
                 NotificationChannel(
-                    PESCAR_TRACKING_CHANNEL,
+                    _pescarTrackingChannel,
                     getString(
                         R.string.tracking_notification_channel_name),
                     NotificationManager.IMPORTANCE_HIGH
                 )
             )
-            return Notification.Builder(this, PESCAR_TRACKING_CHANNEL)
+            return Notification.Builder(this, _pescarTrackingChannel)
                 .setContentTitle(getString(R.string.tracking_notification_title))
                 .setContentText(getString(R.string.tracking_notification_text))
                 .setSmallIcon(android.R.drawable.ic_menu_mylocation)
@@ -146,7 +144,7 @@ class TrackService : Service() {
                 .build()
         }
         else {
-            return NotificationCompat.Builder(this, PESCAR_TRACKING_CHANNEL)
+            return NotificationCompat.Builder(this, _pescarTrackingChannel)
                 .setContentTitle(getString(R.string.tracking_notification_title))
                 .setContentText(getString(R.string.tracking_notification_text))
                 .setSmallIcon(android.R.drawable.ic_menu_mylocation)
@@ -173,7 +171,7 @@ class TrackService : Service() {
             locationManager.removeUpdates(locationListener)
         }
         catch (e: Exception) {
-            Log.e(TAG, "Error destroying service", e)
+            Log.e(_tag, "Error destroying service", e)
         }
     }
 
