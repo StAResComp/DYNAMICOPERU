@@ -1,0 +1,52 @@
+language: android
+
+android:
+  components:
+    # Uncomment the lines below if you want to
+    # use the latest revision of Android SDK Tools
+    - tools
+    - platform-tools
+    - tools
+
+    # The BuildTools version used by your project
+    - build-tools-28.0.3
+
+    # The SDK version used to compile your project
+    - android-27
+
+    # Additional components
+    - extra-google-google_play_services
+    - extra-google-m2repository
+    - extra-android-m2repository
+
+    # Specify at least one system image,
+    # if you need to run emulator(s) during your tests
+    #- sys-img-armeabi-v7a-android-16
+    #- sys-img-armeabi-v7a-google_apis-17
+    #- sys-img-armeabi-v7a-google_apis-18
+    #- sys-img-armeabi-v7a-google_apis-19
+    #- sys-img-armeabi-v7a-google_apis-21
+    #- sys-img-armeabi-v7a-google_apis-22
+    #- sys-img-armeabi-v7a-google_apis-23
+    #- sys-img-armeabi-v7a-google_apis-24
+    # - sys-img-armeabi-v7a-google_apis-25
+
+before_install:
+  - yes | sdkmanager "platforms;android-28"
+
+before_script:
+  - ./add_keys-xml_for_travis.sh
+  # Emulator Management: Create, Start and Wait
+  #- echo no | android create avd --force -n test -t android-25 --abi google_apis/armeabi-v7a
+  #- QEMU_AUDIO_DRV=none emulator -avd test -no-window &
+  #- emulator -avd test -no-skin -no-audio -no-window &
+  #- android-wait-for-emulator
+  #- adb shell input keyevent 82 &
+
+script:
+  - bash gradlew test
+
+notifications:
+
+webhooks: https://outlook.office.com/webhook/7cb17fa1-8130-4cad-a8b5-7d12328cef44@f85626cb-0da8-49d3-aa58-64ef678ef01a/TravisCI/edfddc030b9d4fd4995211b9db33b67e/241dea77-f6fa-43b8-9a6d-d88d5cb82f2b
+
