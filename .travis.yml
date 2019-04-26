@@ -35,7 +35,7 @@ before_install:
   - yes | sdkmanager "platforms;android-28"
 
 before_script:
-  - ./add_keys-xml_for_travis.sh
+  #- ./add_keys-xml_for_travis.sh
   # Emulator Management: Create, Start and Wait
   #- echo no | android create avd --force -n test -t android-25 --abi google_apis/armeabi-v7a
   #- QEMU_AUDIO_DRV=none emulator -avd test -no-window &
