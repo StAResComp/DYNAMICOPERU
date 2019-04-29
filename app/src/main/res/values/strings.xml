@@ -2,6 +2,9 @@
 
     <string name="app_name">Pescar</string>
 
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
     <!-- Screen titles -->
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>

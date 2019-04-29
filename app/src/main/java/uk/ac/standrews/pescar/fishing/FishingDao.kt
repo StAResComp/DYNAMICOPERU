@@ -35,4 +35,28 @@ interface FishingDao {
     @Query("SELECT name FROM species")
     fun getSpecies(): Array<String>
 
+    /**
+     * Get most recent [Trip] from the database.
+     *
+     * @return most recent [Trip]
+     */
+    @Query("SELECT * FROM trip ORDER BY id DESC LIMIT 1")
+    fun getLastTrip(): Trip?
+
+    /**
+     * Add a [Trip] to the database.
+     *
+     * @param trip [Trip] to be inserted
+     */
+    @Insert
+    fun insertTrip(trip: Trip)
+
+    /**
+     * Add a [Trip] to the database.
+     *
+     * @param trip [Trip] to be inserted
+     */
+    @Query("UPDATE trip SET finishedat = :timestamp WHERE id = :id")
+    fun finishTrip(id: Int, timestamp: Date?)
+
 }

@@ -6,13 +6,18 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.widget.Button
-import android.widget.CompoundButton
 import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_today.*
 import android.widget.Switch
 import uk.ac.standrews.pescar.fishing.FishingDao
+import uk.ac.standrews.pescar.fishing.Trip
+import java.util.*
+import java.util.concurrent.Callable
+import java.util.concurrent.Executors
 
 /**
  * Home Activity. Where users toggle tracking and view/enter details of today's catch
@@ -39,6 +44,12 @@ class TodayActivity : AppCompatActivity() {
             var app = this@TodayActivity.application as PescarApplication
             if (!isChecked) {
                 app.stopTrackingLocation()
+                Executors.newSingleThreadExecutor().execute {
+                    val lastTrip = fishingDao.getLastTrip()
+                    if (lastTrip != null && lastTrip.finishedAt == null) {
+                        fishingDao.finishTrip(lastTrip.id, Date())
+                    }
+                }
             }
             else if (isChecked && ContextCompat.checkSelfPermission(
                     this@TodayActivity, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -48,7 +59,9 @@ class TodayActivity : AppCompatActivity() {
             }
             else if (isChecked && ContextCompat.checkSelfPermission(this@TodayActivity,
                     Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                this.checkNewTrip()
                 app.startTrackingLocation()
+
             }
             else {
                 tracker.toggle()
@@ -103,5 +116,57 @@ class TodayActivity : AppCompatActivity() {
             }
         }
         false
+    }
+
+    fun checkNewTrip() {
+        var needConfirmation = false
+        val c = Callable {
+            fishingDao.getLastTrip()
+        }
+        val lastTrip = Executors.newSingleThreadExecutor().submit(c).get()
+        if (lastTrip != null) {
+            val now = Date()
+            val noon = Calendar.getInstance()
+            noon.set(Calendar.HOUR_OF_DAY, 12)
+            noon.set(Calendar.MINUTE, 0)
+            noon.set(Calendar.SECOND, 0)
+            noon.set(Calendar.MILLISECOND, 0)
+            if (now.before(noon.time)) {
+                noon.add(Calendar.DAY_OF_MONTH, -1)
+            }
+            if (lastTrip.finishedAt == null) {
+                if (lastTrip.startedAt.after(noon.time)) {
+                    needConfirmation = true
+                }
+                else {
+                    lastTrip.finishedAt = noon.time
+                }
+            }
+            else if ((lastTrip.finishedAt as Date).after(noon.time)) {
+                needConfirmation = true
+            }
+
+        }
+        if (needConfirmation) {
+            AlertDialog.Builder(this)
+                .setTitle("New Trip?")
+                .setMessage("Is this the start of a new trip?")
+                .setPositiveButton(R.string.yes) { _,_ ->
+                    Executors.newSingleThreadExecutor().execute {
+                        fishingDao.insertTrip(Trip(startedAt = Date()))
+                        if (lastTrip != null && lastTrip.finishedAt == null) {
+                            fishingDao.finishTrip(lastTrip.id, Date())
+                        }
+                    }
+                }
+                .setNegativeButton(R.string.no) { _,_ ->
+                    if (lastTrip?.finishedAt != null) {
+                        Executors.newSingleThreadExecutor().execute {
+                            fishingDao.finishTrip(lastTrip.id, null)
+                        }
+                    }
+                }
+                .show()
+        }
     }
 }
