@@ -11,31 +11,31 @@
     <string name="title_notifications">Notifications</string>
 
     <!-- Fishing activity details -->
-    <string name="tow_1">Tow 1</string>
-    <string name="tow_2">Tow 2</string>
-    <string name="tow_3">Tow 3</string>
-    <string name="tow_4">Tow 4</string>
-    <string name="tow_5">Tow 5</string>
+    <string name="tow_1">Cala 1</string>
+    <string name="tow_2">Cala 2</string>
+    <string name="tow_3">Cala 3</string>
+    <string name="tow_4">Cala 4</string>
+    <string name="tow_5">Cala 5</string>
 
-    <string name="weight">Wt. (kg)</string>
+    <string name="weight">Peso (kg)</string>
 
-    <string name="haul">Haul</string>
+    <string name="haul">Cala</string>
 
-    <string name="shrimp">Camarón</string>
+    <string name="shrimp">Langostino</string>
     <string name="species_2">Species 2</string>
     <string name="species_3">Species 3</string>
     <string name="species_4">Species 4</string>
 
     <!-- Buttons -->
-    <string name="submit">Submit</string>
-    <string name="view_map">View Map</string>
+    <string name="submit">Submitir</string>
+    <string name="view_map">Ver Mapa</string>
 
     <!-- Tracking -->
-    <string name="stopped_tracking_location">Stopped tracking location</string>
+    <string name="stopped_tracking_location">Paró de registrar ubicación</string>
 
     <!-- Notifications -->
-    <string name="tracking_notification_channel_name">Pescar Location Tracking</string>
-    <string name="tracking_notification_title">Tracking location</string>
-    <string name="tracking_notification_text">The Pescar app is tracking your location</string>
+    <string name="tracking_notification_channel_name">Pescar registrando ubicación</string>
+    <string name="tracking_notification_title">Registrando ubicación</string>
+    <string name="tracking_notification_text">The Pescar is tracking your location</string>
 
 </resources>
