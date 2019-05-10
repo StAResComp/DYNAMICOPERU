@@ -67,7 +67,7 @@ abstract class AppDatabase : RoomDatabase() {
                     Executors.newSingleThreadExecutor().execute {
                         val speciesToInsert = Species.getInitialData()
                         val fishingDao = getAppDataBase(context).fishingDao()
-                        val currentSpeciesNames = fishingDao.getSpecies()
+                        val currentSpeciesNames = fishingDao.getSpeciesNames()
                         if (currentSpeciesNames.isEmpty()) {
                             fishingDao.insertSpecies(speciesToInsert)
                         }

@@ -38,4 +38,7 @@
     <string name="tracking_notification_title">Tracking location</string>
     <string name="tracking_notification_text">The Pescar app is tracking your location</string>
 
+    <item type="id" name="landed_id_key" />
+    <item type="id" name="species_id_key" />
+
 </resources>
