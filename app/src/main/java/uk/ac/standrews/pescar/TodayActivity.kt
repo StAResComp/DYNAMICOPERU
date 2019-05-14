@@ -229,8 +229,8 @@ class TodayActivity : AppCompatActivity() {
         }
         if (needConfirmation) {
             AlertDialog.Builder(this)
-                .setTitle("New Trip?")
-                .setMessage("Is this the start of a new trip?")
+                .setTitle(R.string.new_trip_title)
+                .setMessage(R.string.new_trip_question)
                 .setPositiveButton(R.string.yes) { _,_ ->
                     Executors.newSingleThreadExecutor().execute {
                         fishingDao.insertTrip(Trip(startedAt = Date()))

@@ -26,6 +26,10 @@
     <string name="species_3">Species 3</string>
     <string name="species_4">Species 4</string>
 
+    <!-- Trip confirmation alert -->
+    <string name="new_trip_title">New Trip?</string>
+    <string name="new_trip_question">Is this the start of a new trip?</string>
+
     <!-- Buttons -->
     <string name="submit">Submit</string>
     <string name="view_map">View Map</string>
