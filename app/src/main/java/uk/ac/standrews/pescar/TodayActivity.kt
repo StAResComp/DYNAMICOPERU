@@ -242,8 +242,9 @@ class TodayActivity : AppCompatActivity() {
                 }
                 .setNegativeButton(R.string.no) { _,_ ->
                     if (lastTrip?.finishedAt != null) {
+                        lastTrip.finishedAt = null
                         Executors.newSingleThreadExecutor().execute {
-                            fishingDao.finishTrip(lastTrip.id, null)
+                            fishingDao.finishTrip(lastTrip.id, lastTrip.finishedAt)
                         }
                         setMostRecentTrip(lastTrip)
                     }
