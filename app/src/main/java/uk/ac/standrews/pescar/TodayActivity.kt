@@ -3,16 +3,11 @@ package uk.ac.standrews.pescar
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_today.*
@@ -36,6 +31,7 @@ class TodayActivity : AppCompatActivity() {
     lateinit var mapButton: Button
     lateinit var tows: Array<EditText>
     lateinit var landeds: Array<Pair<TextView, EditText>>
+    lateinit var tripInfo: TextView
     lateinit var fishingDao: FishingDao
     private var mostRecentTrip: Trip? = null
 
@@ -64,6 +60,8 @@ class TodayActivity : AppCompatActivity() {
             Pair(findViewById(R.id.species_4_label), findViewById(R.id.species_4))
         )
 
+        tripInfo = findViewById(R.id.trip_info)
+
         this.setMostRecentTrip(null)
 
         tows.forEach { textField ->
@@ -80,7 +78,6 @@ class TodayActivity : AppCompatActivity() {
                                 fishingDao.updateTow((field.tag as Int), field.text.toString().toDouble(), Date())
                             }
                         } else {
-                            Log.e("TRIP", mostRecentTrip.toString())
                             Executors.newSingleThreadExecutor().execute {
                                 field.tag = fishingDao.insertTow(
                                     Tow(
@@ -105,7 +102,6 @@ class TodayActivity : AppCompatActivity() {
                         if (mostRecentTrip == null) {
                             checkNewTrip()
                         }
-                        Log.e("LANDED", field.getTag(R.id.landed_id_key).toString())
                         if (field.getTag(R.id.landed_id_key) is Number) {
                             Executors.newSingleThreadExecutor().execute {
                                 fishingDao.updateLanded(
@@ -148,9 +144,12 @@ class TodayActivity : AppCompatActivity() {
                 Executors.newSingleThreadExecutor().execute {
                     val lastTrip = fishingDao.getLastTrip()
                     if (lastTrip != null && lastTrip.finishedAt == null) {
-                        fishingDao.finishTrip(lastTrip.id, Date())
+                        lastTrip.finishedAt = Date()
+                        fishingDao.finishTrip(lastTrip.id, lastTrip.finishedAt)
+                        this@TodayActivity.runOnUiThread {
+                            setMostRecentTrip(lastTrip)
+                        }
                     }
-                    setMostRecentTrip(lastTrip)
                 }
             }
             else if (isChecked && ContextCompat.checkSelfPermission(
@@ -238,8 +237,8 @@ class TodayActivity : AppCompatActivity() {
                         if (lastTrip != null && lastTrip.finishedAt == null) {
                             fishingDao.finishTrip(lastTrip.id, Date())
                         }
-                        setMostRecentTrip(null)
                     }
+                    setMostRecentTrip(null)
                 }
                 .setNegativeButton(R.string.no) { _,_ ->
                     if (lastTrip?.finishedAt != null) {
@@ -268,37 +267,45 @@ class TodayActivity : AppCompatActivity() {
         }
         mostRecentTrip = trip ?: Executors.newSingleThreadExecutor().submit(c).get()
         if (mostRecentTrip != null) {
-            Executors.newSingleThreadExecutor().execute {
-                fishingDao.getTowsForTrip((mostRecentTrip as Trip).id).forEachIndexed { index, tow ->
-                    tows[index].tag = tow.id
-                    tows[index].setText(tow.weight.toString())
+            val c = Callable {
+                fishingDao.getTowsForTrip((mostRecentTrip as Trip).id)
+            }
+            val towsList = Executors.newSingleThreadExecutor().submit(c).get()
+            towsList.forEachIndexed { index, tow ->
+                tows[index].tag = tow.id
+                tows[index].setText(tow.weight.toString())
+            }
+            val ca = Callable {
+                fishingDao.getLandedsForTrip((mostRecentTrip as Trip).id)
+            }
+            val existingLandeds = Executors.newSingleThreadExecutor().submit(ca).get()
+            if (existingLandeds.isNotEmpty()) {
+                existingLandeds.forEachIndexed { index, landedWithSpecies ->
+                    landeds[index].first.setTag(R.id.species_id_key, landedWithSpecies.species.first().id)
+                    landeds[index].first.text = landedWithSpecies.species.first().name
+                    landeds[index].second.setTag(R.id.landed_id_key, landedWithSpecies.landed.id)
+                    landeds[index].second.setText(landedWithSpecies.landed.weight.toString())
                 }
-                val existinglandeds = fishingDao.getLandedsForTrip((mostRecentTrip as Trip).id)
-                if (existinglandeds.size > 0) {
-                    existinglandeds.forEachIndexed { index, landedWithSpecies ->
-                        landeds[index].first.setTag(R.id.species_id_key, landedWithSpecies.species.first().id)
-                        landeds[index].first.text = landedWithSpecies.species.first().name
-                        landeds[index].second.setTag(R.id.landed_id_key, landedWithSpecies.landed.id)
-                        landeds[index].second.setText(landedWithSpecies.landed.weight.toString())
-                    }
-                }
-                else {
-                    doSpeciesLabels()
-                }
+            }
+            else {
+                doSpeciesLabels()
             }
         }
         else {
             doSpeciesLabels()
         }
+        tripInfo.text = "${mostRecentTrip?.startedAt?.toLocaleString()} - ${mostRecentTrip?.finishedAt?.toLocaleString()}"
     }
 
     private fun doSpeciesLabels() {
-        Executors.newSingleThreadExecutor().execute {
-            fishingDao.getSpecies().forEachIndexed { index, species ->
-                landeds[index].first.text = species.name
-                landeds[index].second.setTag(R.id.landed_id_key, false)
-                landeds[index].second.setTag(R.id.species_id_key, species.id)
-            }
+        val c = Callable {
+            fishingDao.getSpecies()
+        }
+        val speciesList= Executors.newSingleThreadExecutor().submit(c).get()
+        speciesList.forEachIndexed { index, species ->
+            landeds[index].first.text = species.name
+            landeds[index].second.setTag(R.id.landed_id_key, false)
+            landeds[index].second.setTag(R.id.species_id_key, species.id)
         }
     }
 }

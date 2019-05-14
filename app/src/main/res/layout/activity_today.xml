@@ -40,6 +40,13 @@
                 android:text="@string/view_map" />
 
             <TextView
+                    android:id="@+id/trip_info"
+                    android:layout_columnSpan="2"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            <TextView
                 style="@android:style/TextAppearance.Medium"
                 android:layout_columnWeight="1"
                 android:layout_gravity="end"
