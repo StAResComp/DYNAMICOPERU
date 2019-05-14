@@ -1,6 +1,7 @@
 package uk.ac.standrews.pescar
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
@@ -126,6 +127,11 @@ class TodayActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+
+        mapButton.setOnClickListener {
+            val intent = Intent(this, MapsActivity::class.java)
+            startActivity(intent)
         }
 
         setUpTracker()

@@ -42,4 +42,7 @@
     <string name="tracking_notification_title">Registrando ubicación</string>
     <string name="tracking_notification_text">The Pescar is tracking your location</string>
 
+    <!-- Map -->
+    <string name="title_activity_maps">Map</string>
+
 </resources>
