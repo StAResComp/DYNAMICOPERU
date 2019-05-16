@@ -49,4 +49,6 @@ interface FishingDao {
 
     @Query("UPDATE landed SET weight = :weight, timestamp = :timestamp WHERE id = :id")
     fun updateLanded(id: Int, weight: Double, timestamp: Date)
+
+
 }

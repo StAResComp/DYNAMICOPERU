@@ -45,4 +45,6 @@ interface TrackDao {
     @Query("SELECT COUNT(*) FROM position")
     fun countPositions(): Int
 
+    @Query(" SELECT * FROM position WHERE timestamp >= (SELECT startedat FROM trip WHERE id = :tripId) AND timestamp < (SELECT IFNULL(finishedat, :now) FROM trip WHERE id = :tripId)")
+    fun getPositionsForTrip(tripId: Int, now: Date): List<Position>
 }

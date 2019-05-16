@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_today.*
@@ -131,6 +132,13 @@ class TodayActivity : AppCompatActivity() {
 
         mapButton.setOnClickListener {
             val intent = Intent(this, MapsActivity::class.java)
+            val trip = mostRecentTrip
+            if (trip != null) {
+                intent.putExtra("trip_id", trip.id)
+                intent.putExtra("started_at", trip.startedAt.toLocaleString())
+                intent.putExtra("finished_at", trip.finishedAt?.toLocaleString())
+            }
+            Log.e("MAP_INTENT", trip?.id.toString())
             startActivity(intent)
         }
 
@@ -263,8 +271,8 @@ class TodayActivity : AppCompatActivity() {
                 if (lastTrip != null && lastTrip.finishedAt == null) {
                     fishingDao.finishTrip(lastTrip.id, Date())
                 }
-                setMostRecentTrip(null)
             }
+            setMostRecentTrip(null)
         }
     }
 
