@@ -16,15 +16,18 @@
     <string name="tow_3">Cala 3</string>
     <string name="tow_4">Cala 4</string>
     <string name="tow_5">Cala 5</string>
+    <string name="tow_6">Cala 6</string>
 
     <string name="weight">Peso (kg)</string>
 
     <string name="haul">Cala</string>
 
     <string name="shrimp">Langostino</string>
-    <string name="species_2">Species 2</string>
-    <string name="species_3">Species 3</string>
-    <string name="species_4">Species 4</string>
+    <string name="species_2">Langostino jumbo</string>
+    <string name="species_3">Carajito</string>
+    <string name="species_4">Lenguado</string>
+    <string name="species_5">Calamar</string>
+    <string name="species_6">Guitarra</string>
 
     <!-- Trip confirmation alert -->
     <string name="new_trip_title">New Trip?</string>
