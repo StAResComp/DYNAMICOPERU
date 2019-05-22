@@ -1,18 +1,14 @@
 package uk.ac.standrews.pescar
 
-import android.Manifest
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.widget.Button
 import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_today.*
-import android.widget.Switch
 import android.widget.TextView
 import uk.ac.standrews.pescar.fishing.FishingDao
 import uk.ac.standrews.pescar.fishing.Landed
@@ -22,30 +18,29 @@ import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
 /**
- * Home Activity. Where users toggle tracking and view/enter details of today's catch
+ * Archive Activity. Where users view/enter details of previous days' catch
  */
-class TodayActivity : AppCompatActivity() {
+class ArchiveActivity : AppCompatActivity() {
 
     //Need to be bound to widget in onCreate
-    private lateinit var tracker: Switch
     private lateinit var mapButton: Button
     private lateinit var tows: Array<EditText>
     private lateinit var landeds: Array<Pair<TextView, EditText>>
     private lateinit var fishingDao: FishingDao
-    private lateinit var today: Pair<Date, Date>
+    private lateinit var day: Pair<Date, Date>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         fishingDao = AppDatabase.getAppDataBase(this).fishingDao()
 
-        today = (this.application as PescarApplication).getPeriodBoundaries()
+        day = (this.application as PescarApplication).getPeriodBoundaries(Date(intent.getLongExtra("midnight",0)))
 
         //Bind to layout
-        setContentView(R.layout.activity_today)
+        setContentView(R.layout.activity_archive)
 
         var tripInfo: TextView = findViewById(R.id.trip_info)
-        tripInfo.setText("${today.first.toLocaleString()} - ${today.second.toLocaleString()}")
+        tripInfo.setText("${day.first.toLocaleString()} - ${day.second.toLocaleString()}")
 
         mapButton = findViewById(R.id.map_button)
 
@@ -55,48 +50,19 @@ class TodayActivity : AppCompatActivity() {
 
         mapButton.setOnClickListener {
             val intent = Intent(this, MapsActivity::class.java)
-            intent.putExtra("started_at", today.first.time)
-            intent.putExtra("finished_at", today.second.time)
+            intent.putExtra("started_at", day.first.time)
+            intent.putExtra("finished_at", day.second.time)
             startActivity(intent)
         }
-
-        setUpTracker()
 
         //Navigation
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
 
-    private fun setUpTracker() {
-        //Bind tracker switch to widget and set listener
-        tracker = findViewById(R.id.tracker)
-        if ((this.application as PescarApplication).trackingLocation) {
-            tracker.toggle()
-        }
-        tracker.setOnCheckedChangeListener { _, isChecked ->
-            var app = this@TodayActivity.application as PescarApplication
-            if (!isChecked) {
-                app.stopTrackingLocation()
-            }
-            else if (isChecked && ContextCompat.checkSelfPermission(
-                    this@TodayActivity, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(
-                    this@TodayActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 568)
-            }
-            else if (isChecked && ContextCompat.checkSelfPermission(this@TodayActivity,
-                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                app.startTrackingLocation()
-            }
-            else {
-                tracker.toggle()
-            }
-        }
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == 568) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                (this@TodayActivity.application as PescarApplication).startTrackingLocation()
+                (this@ArchiveActivity.application as PescarApplication).startTrackingLocation()
             }
             else {
                 tracker.toggle()
@@ -109,11 +75,13 @@ class TodayActivity : AppCompatActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_today -> {
+                val intent = Intent(this, TodayActivity::class.java)
+                startActivity(intent)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_archive -> {
                 val cal = Calendar.getInstance()
-                val dpd = DatePickerDialog(this@TodayActivity, DatePickerDialog.OnDateSetListener { view, year, month, day ->
+                val dpd = DatePickerDialog(this@ArchiveActivity, DatePickerDialog.OnDateSetListener { view, year, month, day ->
                     val intent = Intent(this, ArchiveActivity::class.java)
                     val picked = Calendar.getInstance()
                     picked.set(Calendar.YEAR, year)
@@ -150,7 +118,7 @@ class TodayActivity : AppCompatActivity() {
 
         //Get existing values
         val towsCallable = Callable {
-            fishingDao.getTowsForPeriod(today.first, today.second)
+            fishingDao.getTowsForPeriod(day.first, day.second)
         }
         val towList = Executors.newSingleThreadExecutor().submit(towsCallable).get()
         towList.forEachIndexed { index, tow ->
@@ -200,7 +168,7 @@ class TodayActivity : AppCompatActivity() {
         }
         val speciesList = Executors.newSingleThreadExecutor().submit(speciesCallable).get()
         val landedsCallable = Callable {
-            fishingDao.getLandedsForPeriod(today.first, today.second)
+            fishingDao.getLandedsForPeriod(day.first, day.second)
         }
         val landedsList = Executors.newSingleThreadExecutor().submit(landedsCallable).get()
         speciesList.forEachIndexed { index, species ->

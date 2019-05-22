@@ -6,8 +6,8 @@
     <string name="no">No</string>
 
     <!-- Screen titles -->
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_today">Today</string>
+    <string name="title_archive">Archive</string>
     <string name="title_notifications">Notifications</string>
 
     <!-- Fishing activity details -->
@@ -47,5 +47,8 @@
 
     <!-- Map -->
     <string name="title_activity_maps">Map</string>
+
+    <!-- Archive -->
+    <string name="title_activity_archive">Archive</string>
 
 </resources>

@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:id="@+id/container"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="match_parent"
+                                             tools:context=".TodayActivity">
+
+    <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginBottom="?actionBarSize">
+
+        <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                app:layout_constraintTop_toTopOf="parent">
+
+            <Button
+                    android:id="@+id/map_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_columnSpan="2"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/view_map"/>
+
+            <TextView
+                    android:id="@+id/trip_info"
+                    android:layout_columnSpan="2"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <TextView
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="end"
+                    android:text="@string/tow_1"/>
+
+            <EditText
+                    android:id="@+id/tow_1"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="start"
+                    android:hint="@string/weight"
+                    android:inputType="numberDecimal"/>
+
+            <TextView
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="end"
+                    android:text="@string/tow_2"/>
+
+            <EditText
+                    android:id="@+id/tow_2"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="start"
+                    android:hint="@string/weight"
+                    android:inputType="numberDecimal"/>
+
+            <TextView
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="end"
+                    android:text="@string/tow_3"/>
+
+            <EditText
+                    android:id="@+id/tow_3"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="start"
+                    android:hint="@string/weight"
+                    android:inputType="numberDecimal"/>
+
+            <TextView
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="end"
+                    android:text="@string/tow_4"/>
+
+            <EditText
+                    android:id="@+id/tow_4"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="start"
+                    android:hint="@string/weight"
+                    android:inputType="numberDecimal"/>
+
+            <TextView
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="end"
+                    android:text="@string/tow_5"/>
+
+            <EditText
+                    android:id="@+id/tow_5"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="start"
+                    android:hint="@string/weight"
+                    android:inputType="numberDecimal"/>
+
+            <TextView
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="end"
+                    android:text="@string/tow_6"/>
+
+            <EditText
+                    android:id="@+id/tow_6"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="start"
+                    android:hint="@string/weight"
+                    android:inputType="numberDecimal"/>
+
+            <TextView
+                    style="@android:style/TextAppearance.Large"
+                    android:layout_columnSpan="2"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="center"
+                    android:text="@string/haul"/>
+
+            <TextView
+                    android:id="@+id/species_1_label"
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="end"
+                    android:text="@string/shrimp"/>
+
+            <EditText
+                    android:id="@+id/species_1"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="start"
+                    android:hint="@string/weight"
+                    android:inputType="numberDecimal"/>
+
+            <TextView
+                    android:id="@+id/species_2_label"
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="end"
+                    android:text="@string/species_2"/>
+
+            <EditText
+                    android:id="@+id/species_2"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="start"
+                    android:hint="@string/weight"
+                    android:inputType="numberDecimal"/>
+
+            <TextView
+                    android:id="@+id/species_3_label"
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="end"
+                    android:text="@string/species_3"/>
+
+            <EditText
+                    android:id="@+id/species_3"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="start"
+                    android:hint="@string/weight"
+                    android:inputType="numberDecimal"/>
+
+            <TextView
+                    android:id="@+id/species_4_label"
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="end"
+                    android:text="@string/species_4"/>
+
+            <EditText
+                    android:id="@+id/species_4"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="start"
+                    android:hint="@string/weight"
+                    android:inputType="numberDecimal"/>
+
+            <TextView
+                    android:id="@+id/species_5_label"
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="end"
+                    android:text="@string/species_5"/>
+
+            <EditText
+                    android:id="@+id/species_5"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="start"
+                    android:hint="@string/weight"
+                    android:inputType="numberDecimal"/>
+
+            <TextView
+                    android:id="@+id/species_6_label"
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="end"
+                    android:text="@string/species_6"/>
+
+            <EditText
+                    android:id="@+id/species_6"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_gravity="start"
+                    android:hint="@string/weight"
+                    android:inputType="numberDecimal"/>
+
+        </GridLayout>
+
+    </ScrollView>
+
+    <android.support.design.widget.BottomNavigationView
+            android:id="@+id/navigation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
+            android:background="?android:attr/windowBackground"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:menu="@menu/navigation"/>
+
+</android.support.constraint.ConstraintLayout>
