@@ -35,4 +35,21 @@ class PescarApplication : Application() {
         trackingLocation = false
     }
 
+    fun getPeriodBoundaries(timestamp: Date? = null): Pair<Date, Date> {
+        val c = Calendar.getInstance()
+        if (timestamp != null) {
+            c.time = timestamp
+        }
+        if (c.get(Calendar.AM_PM) == Calendar.AM) {
+            c.add(Calendar.DATE, -1)
+        }
+        c.set(Calendar.HOUR_OF_DAY, 12)
+        c.set(Calendar.MINUTE, 0)
+        c.set(Calendar.SECOND, 0)
+        c.set(Calendar.MILLISECOND, 0)
+        val startTime = c.time
+        c.add(Calendar.DATE, 1)
+        val finishTime = c.time
+        return Pair(startTime, finishTime)
+    }
 }

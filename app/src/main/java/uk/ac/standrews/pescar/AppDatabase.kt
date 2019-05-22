@@ -18,11 +18,10 @@ import java.util.concurrent.Executors
     entities = [
         Position::class,
         Species::class,
-        Trip::class,
         Tow::class,
         Landed::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(DateTypeConverter::class)

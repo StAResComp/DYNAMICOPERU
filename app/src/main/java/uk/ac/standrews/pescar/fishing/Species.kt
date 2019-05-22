@@ -18,7 +18,12 @@ data class Species(
     companion object {
         fun getInitialData(): Array<Species> {
             return arrayOf(
-                Species(0, "Camarón")
+                Species(1, "Langostino"),
+                Species(2, "Langostino jumbo"),
+                Species(3, "Carajito"),
+                Species(4, "Lenguado"),
+                Species(5, "Calamar"),
+                Species(6, "Guitarra")
             )
         }
     }

@@ -16,6 +16,7 @@
     <string name="tow_3">Tow 3</string>
     <string name="tow_4">Tow 4</string>
     <string name="tow_5">Tow 5</string>
+    <string name="tow_6">Tow 6</string>
 
     <string name="weight">Wt. (kg)</string>
 
@@ -25,6 +26,8 @@
     <string name="species_2">Species 2</string>
     <string name="species_3">Species 3</string>
     <string name="species_4">Species 4</string>
+    <string name="species_5">Species 5</string>
+    <string name="species_6">Species 6</string>
 
     <!-- Trip confirmation alert -->
     <string name="new_trip_title">New Trip?</string>

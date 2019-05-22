@@ -20,15 +20,9 @@ import java.util.*
             entity = Species::class,
             parentColumns = ["id"],
             childColumns = ["species_id"]
-        ),
-        ForeignKey(
-            entity = Trip::class,
-            parentColumns = ["id"],
-            childColumns = ["trip_id"]
         )
     ],
     indices = [
-        Index("trip_id"),
         Index("species_id")
     ]
 )
@@ -37,6 +31,5 @@ data class Landed(
     @ColumnInfo(name = "species_id") var speciesId: Int,
     var weight: Double,
     var timestamp: Date,
-    @ColumnInfo(name = "trip_id") var tripId: Int,
     var uploaded: Date? = null
 )

@@ -7,9 +7,7 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_today.*
@@ -18,7 +16,6 @@ import android.widget.TextView
 import uk.ac.standrews.pescar.fishing.FishingDao
 import uk.ac.standrews.pescar.fishing.Landed
 import uk.ac.standrews.pescar.fishing.Tow
-import uk.ac.standrews.pescar.fishing.Trip
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
@@ -29,116 +26,36 @@ import java.util.concurrent.Executors
 class TodayActivity : AppCompatActivity() {
 
     //Need to be bound to widget in onCreate
-    lateinit var tracker: Switch
-    lateinit var mapButton: Button
-    lateinit var tows: Array<EditText>
-    lateinit var landeds: Array<Pair<TextView, EditText>>
-    lateinit var tripInfo: TextView
-    lateinit var fishingDao: FishingDao
-    private var mostRecentTrip: Trip? = null
+    private lateinit var tracker: Switch
+    private lateinit var mapButton: Button
+    private lateinit var tows: Array<EditText>
+    private lateinit var landeds: Array<Pair<TextView, EditText>>
+    private lateinit var fishingDao: FishingDao
+    private lateinit var today: Pair<Date, Date>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         fishingDao = AppDatabase.getAppDataBase(this).fishingDao()
 
+        today = (this.application as PescarApplication).getPeriodBoundaries()
+
         //Bind to layout
         setContentView(R.layout.activity_today)
 
+        var tripInfo: TextView = findViewById(R.id.trip_info)
+        tripInfo.setText("${today.first.toLocaleString()} - ${today.second.toLocaleString()}")
+
         mapButton = findViewById(R.id.map_button)
 
-        tows = arrayOf(
-            findViewById(R.id.tow_1),
-            findViewById(R.id.tow_2),
-            findViewById(R.id.tow_3),
-            findViewById(R.id.tow_4),
-            findViewById(R.id.tow_5)
-        )
+        doTowFields()
 
-        landeds = arrayOf(
-            Pair(findViewById(R.id.species_1_label), findViewById(R.id.species_1)),
-            Pair(findViewById(R.id.species_2_label), findViewById(R.id.species_2)),
-            Pair(findViewById(R.id.species_3_label), findViewById(R.id.species_3)),
-            Pair(findViewById(R.id.species_4_label), findViewById(R.id.species_4))
-        )
-
-        tripInfo = findViewById(R.id.trip_info)
-
-        this.setMostRecentTrip(null)
-
-        tows.forEach { textField ->
-            textField.tag = false
-            textField.setOnFocusChangeListener { view, hasFocus ->
-                if (!hasFocus) {
-                    val field = view as EditText
-                    if (field.text.matches("\\d+(\\.\\d+)?".toRegex())) {
-                        if (mostRecentTrip == null) {
-                            checkNewTrip()
-                        }
-                        if (field.tag is Number) {
-                            Executors.newSingleThreadExecutor().execute {
-                                fishingDao.updateTow((field.tag as Int), field.text.toString().toDouble(), Date())
-                            }
-                        } else {
-                            Executors.newSingleThreadExecutor().execute {
-                                field.tag = fishingDao.insertTow(
-                                    Tow(
-                                        tripId = mostRecentTrip!!.id,
-                                        weight = field.text.toString().toDouble(),
-                                        timestamp = Date()
-                                    )
-                                ).toInt()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        landeds.forEach { pair ->
-            val textField = pair.second
-            textField.setOnFocusChangeListener { view, hasFocus ->
-                if (!hasFocus) {
-                    val field = view as EditText
-                    if (field.text.matches("\\d+(\\.\\d+)?".toRegex())) {
-                        if (mostRecentTrip == null) {
-                            checkNewTrip()
-                        }
-                        if (field.getTag(R.id.landed_id_key) is Number) {
-                            Executors.newSingleThreadExecutor().execute {
-                                fishingDao.updateLanded(
-                                    (field.getTag(R.id.landed_id_key) as Int), field.text.toString().toDouble(), Date()
-                                )
-                            }
-                        }
-                        else {
-                            Executors.newSingleThreadExecutor().execute {
-                                field.setTag(
-                                    R.id.landed_id_key, fishingDao.insertLanded(
-                                        Landed(
-                                            tripId = mostRecentTrip!!.id,
-                                            weight = field.text.toString().toDouble(),
-                                            timestamp = Date(),
-                                            speciesId = (field.getTag(R.id.species_id_key) as Int)
-                                        )
-                                    ).toInt()
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        doLandedFields()
 
         mapButton.setOnClickListener {
             val intent = Intent(this, MapsActivity::class.java)
-            val trip = mostRecentTrip
-            if (trip != null) {
-                intent.putExtra("trip_id", trip.id)
-                intent.putExtra("started_at", trip.startedAt.toLocaleString())
-                intent.putExtra("finished_at", trip.finishedAt?.toLocaleString())
-            }
-            Log.e("MAP_INTENT", trip?.id.toString())
+            intent.putExtra("started_at", today.first.time)
+            intent.putExtra("finished_at", today.second.time)
             startActivity(intent)
         }
 
@@ -155,16 +72,6 @@ class TodayActivity : AppCompatActivity() {
             var app = this@TodayActivity.application as PescarApplication
             if (!isChecked) {
                 app.stopTrackingLocation()
-                Executors.newSingleThreadExecutor().execute {
-                    val lastTrip = fishingDao.getLastTrip()
-                    if (lastTrip != null && lastTrip.finishedAt == null) {
-                        lastTrip.finishedAt = Date()
-                        fishingDao.finishTrip(lastTrip.id, lastTrip.finishedAt)
-                        this@TodayActivity.runOnUiThread {
-                            setMostRecentTrip(lastTrip)
-                        }
-                    }
-                }
             }
             else if (isChecked && ContextCompat.checkSelfPermission(
                     this@TodayActivity, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -174,9 +81,7 @@ class TodayActivity : AppCompatActivity() {
             }
             else if (isChecked && ContextCompat.checkSelfPermission(this@TodayActivity,
                     Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                this.checkNewTrip()
                 app.startTrackingLocation()
-
             }
             else {
                 tracker.toggle()
@@ -212,115 +117,118 @@ class TodayActivity : AppCompatActivity() {
         false
     }
 
-    private fun checkNewTrip() {
-        var needConfirmation = false
-        val c = Callable {
-            fishingDao.getLastTrip()
-        }
-        val lastTrip = Executors.newSingleThreadExecutor().submit(c).get()
-        if (lastTrip != null) {
-            val now = Date()
-            val noon = Calendar.getInstance()
-            noon.set(Calendar.HOUR_OF_DAY, 12)
-            noon.set(Calendar.MINUTE, 0)
-            noon.set(Calendar.SECOND, 0)
-            noon.set(Calendar.MILLISECOND, 0)
-            if (now.before(noon.time)) {
-                noon.add(Calendar.DAY_OF_MONTH, -1)
-            }
-            if (lastTrip.finishedAt == null) {
-                if (lastTrip.startedAt.after(noon.time)) {
-                    needConfirmation = true
-                }
-                else {
-                    lastTrip.finishedAt = noon.time
-                }
-            }
-            else if ((lastTrip.finishedAt as Date).after(noon.time)) {
-                needConfirmation = true
-            }
+    private fun doTowFields() {
 
+        //Get views
+        tows = arrayOf(
+            findViewById(R.id.tow_1),
+            findViewById(R.id.tow_2),
+            findViewById(R.id.tow_3),
+            findViewById(R.id.tow_4),
+            findViewById(R.id.tow_5),
+            findViewById(R.id.tow_6)
+        )
+
+        //Get existing values
+        val towsCallable = Callable {
+            fishingDao.getTowsForPeriod(today.first, today.second)
         }
-        if (needConfirmation) {
-            AlertDialog.Builder(this)
-                .setTitle(R.string.new_trip_title)
-                .setMessage(R.string.new_trip_question)
-                .setPositiveButton(R.string.yes) { _,_ ->
-                    Executors.newSingleThreadExecutor().execute {
-                        fishingDao.insertTrip(Trip(startedAt = Date()))
-                        if (lastTrip != null && lastTrip.finishedAt == null) {
-                            fishingDao.finishTrip(lastTrip.id, Date())
+        val towList = Executors.newSingleThreadExecutor().submit(towsCallable).get()
+        towList.forEachIndexed { index, tow ->
+            tows[index].tag = tow.id
+            tows[index].setText(tow.weight.toString())
+        }
+
+        //Set listeners
+        tows.forEach { textField ->
+            textField.setOnFocusChangeListener { view, hasFocus ->
+                if (!hasFocus) {
+                    val field = view as EditText
+                    if (field.text.matches("\\d+(\\.\\d+)?".toRegex())) {
+                        if (field.tag is Number) {
+                            Executors.newSingleThreadExecutor().execute {
+                                fishingDao.updateTow((field.tag as Int), field.text.toString().toDouble(), Date())
+                            }
+                        } else {
+                            val c = Callable {
+                                fishingDao.insertTow(
+                                    Tow(weight = field.text.toString().toDouble(), timestamp = Date())
+                                ).toInt()
+                            }
+                            field.tag = Executors.newSingleThreadExecutor().submit(c).get()
                         }
                     }
-                    setMostRecentTrip(null)
-                }
-                .setNegativeButton(R.string.no) { _,_ ->
-                    if (lastTrip?.finishedAt != null) {
-                        lastTrip.finishedAt = null
-                        Executors.newSingleThreadExecutor().execute {
-                            fishingDao.finishTrip(lastTrip.id, lastTrip.finishedAt)
-                        }
-                        setMostRecentTrip(lastTrip)
-                    }
-                }
-                .show()
-        }
-        else {
-            Executors.newSingleThreadExecutor().execute {
-                fishingDao.insertTrip(Trip(startedAt = Date()))
-                if (lastTrip != null && lastTrip.finishedAt == null) {
-                    fishingDao.finishTrip(lastTrip.id, Date())
                 }
             }
-            setMostRecentTrip(null)
         }
     }
 
-    private fun setMostRecentTrip(trip: Trip?) {
-        val c = Callable {
-            fishingDao.getLastTrip()
-        }
-        mostRecentTrip = trip ?: Executors.newSingleThreadExecutor().submit(c).get()
-        if (mostRecentTrip != null) {
-            val c = Callable {
-                fishingDao.getTowsForTrip((mostRecentTrip as Trip).id)
-            }
-            val towsList = Executors.newSingleThreadExecutor().submit(c).get()
-            towsList.forEachIndexed { index, tow ->
-                tows[index].tag = tow.id
-                tows[index].setText(tow.weight.toString())
-            }
-            val ca = Callable {
-                fishingDao.getLandedsForTrip((mostRecentTrip as Trip).id)
-            }
-            val existingLandeds = Executors.newSingleThreadExecutor().submit(ca).get()
-            if (existingLandeds.isNotEmpty()) {
-                existingLandeds.forEachIndexed { index, landedWithSpecies ->
-                    landeds[index].first.setTag(R.id.species_id_key, landedWithSpecies.species.first().id)
-                    landeds[index].first.text = landedWithSpecies.species.first().name
-                    landeds[index].second.setTag(R.id.landed_id_key, landedWithSpecies.landed.id)
-                    landeds[index].second.setText(landedWithSpecies.landed.weight.toString())
-                }
-            }
-            else {
-                doSpeciesLabels()
-            }
-        }
-        else {
-            doSpeciesLabels()
-        }
-        tripInfo.text = "${mostRecentTrip?.startedAt?.toLocaleString()} - ${mostRecentTrip?.finishedAt?.toLocaleString()}"
-    }
+    private fun doLandedFields() {
 
-    private fun doSpeciesLabels() {
-        val c = Callable {
+        //Get views
+        landeds = arrayOf(
+            Pair(findViewById(R.id.species_1_label), findViewById(R.id.species_1)),
+            Pair(findViewById(R.id.species_2_label), findViewById(R.id.species_2)),
+            Pair(findViewById(R.id.species_3_label), findViewById(R.id.species_3)),
+            Pair(findViewById(R.id.species_4_label), findViewById(R.id.species_4)),
+            Pair(findViewById(R.id.species_5_label), findViewById(R.id.species_5)),
+            Pair(findViewById(R.id.species_6_label), findViewById(R.id.species_6))
+        )
+
+        //Get existing values
+        var speciesCallable = Callable {
             fishingDao.getSpecies()
         }
-        val speciesList= Executors.newSingleThreadExecutor().submit(c).get()
+        val speciesList = Executors.newSingleThreadExecutor().submit(speciesCallable).get()
+        val landedsCallable = Callable {
+            fishingDao.getLandedsForPeriod(today.first, today.second)
+        }
+        val landedsList = Executors.newSingleThreadExecutor().submit(landedsCallable).get()
         speciesList.forEachIndexed { index, species ->
             landeds[index].first.text = species.name
-            landeds[index].second.setTag(R.id.landed_id_key, false)
+            var empty = true
+            landedsList.forEach { lws ->
+                if (empty && lws.species.first().id == species.id) {
+                    landeds[index].second.setTag(R.id.landed_id_key, lws.landed.id)
+                    landeds[index].second.setText(lws.landed.weight.toString())
+                    empty = false
+                }
+            }
+            if (empty) {
+                landeds[index].second.setTag(R.id.landed_id_key, false)
+            }
             landeds[index].second.setTag(R.id.species_id_key, species.id)
+        }
+
+        //Set listeners
+        landeds.forEach { pair ->
+            val textField = pair.second
+            textField.setOnFocusChangeListener { view, hasFocus ->
+                if (!hasFocus) {
+                    val field = view as EditText
+                    if (field.text.matches("\\d+(\\.\\d+)?".toRegex())) {
+                        if (field.getTag(R.id.landed_id_key) is Number) {
+                            Executors.newSingleThreadExecutor().execute {
+                                fishingDao.updateLanded(
+                                    (field.getTag(R.id.landed_id_key) as Int), field.text.toString().toDouble(), Date()
+                                )
+                            }
+                        }
+                        else {
+                            val c = Callable {
+                                fishingDao.insertLanded(
+                                    Landed(
+                                        weight = field.text.toString().toDouble(),
+                                        timestamp = Date(),
+                                        speciesId = (field.getTag(R.id.species_id_key) as Int)
+                                    )
+                                ).toInt()
+                            }
+                            field.setTag(R.id.landed_id_key, Executors.newSingleThreadExecutor().submit(c).get())
+                        }
+                    }
+                }
+            }
         }
     }
 }
