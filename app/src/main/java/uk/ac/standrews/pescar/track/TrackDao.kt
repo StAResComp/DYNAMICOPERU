@@ -21,13 +21,13 @@ interface TrackDao {
     fun insertPosition(pos: Position): Long
 
     /**
-     * Updates a position in the database with an uploaded [Date]
+     * Updates positions in the database with an uploaded [Date]
      *
      * @param timestamp the uploaded date to be recorded
-     * @param id the id of the record to be updated
+     * @param ids the ids of the records to be updated
      */
-    @Query("UPDATE position SET uploaded = :timestamp WHERE id = :id")
-    fun markPositionUploaded(timestamp: Date, id: Long)
+    @Query("UPDATE position SET uploaded = :timestamp WHERE id IN (:ids)")
+    fun markPositionsUploaded(ids: List<Int>, timestamp: Date)
 
     /**
      * Gets the last inserted position
@@ -47,4 +47,7 @@ interface TrackDao {
 
     @Query(" SELECT * FROM position WHERE timestamp >= :startedAt AND timestamp < :finishedAt")
     fun getPositionsForPeriod(startedAt: Date, finishedAt: Date): List<Position>
+
+    @Query("SELECT * FROM position WHERE uploaded IS NULL")
+    fun getUnuploadedPositions(): List<Position>
 }

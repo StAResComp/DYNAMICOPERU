@@ -41,14 +41,14 @@
     <string name="stopped_tracking_location">Paró de registrar ubicación</string>
 
     <!-- Notifications -->
-    <string name="tracking_notification_channel_name">Pescar registrando ubicación</string>
+    <string name="tracking_notification_channel_name">App registrando ubicación</string>
     <string name="tracking_notification_title">Registrando ubicación</string>
-    <string name="tracking_notification_text">The Pescar is tracking your location</string>
+    <string name="tracking_notification_text">El App está registrando su ubicación</string>
 
     <!-- Map -->
     <string name="title_activity_maps">Map</string>
 
     <!-- Archive -->
-    <string name="title_activity_archive">Archive</string>
+    <string name="title_activity_archive">Archivo</string>
 
 </resources>
