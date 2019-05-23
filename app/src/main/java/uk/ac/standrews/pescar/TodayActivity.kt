@@ -33,6 +33,7 @@ class TodayActivity : AppCompatActivity() {
     private lateinit var landeds: Array<Pair<TextView, EditText>>
     private lateinit var fishingDao: FishingDao
     private lateinit var today: Pair<Date, Date>
+    private lateinit var timestamp: Date
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +41,11 @@ class TodayActivity : AppCompatActivity() {
         fishingDao = AppDatabase.getAppDataBase(this).fishingDao()
 
         today = (this.application as PescarApplication).getPeriodBoundaries()
+
+        val c = Calendar.getInstance()
+        c.time = today.first
+        c.add(Calendar.HOUR_OF_DAY, 12)
+        timestamp = c.time
 
         //Bind to layout
         setContentView(R.layout.activity_today)
@@ -171,7 +177,7 @@ class TodayActivity : AppCompatActivity() {
                         } else {
                             val c = Callable {
                                 fishingDao.insertTow(
-                                    Tow(weight = field.text.toString().toDouble(), timestamp = Date())
+                                    Tow(weight = field.text.toString().toDouble(), timestamp = timestamp)
                                 ).toInt()
                             }
                             field.tag = Executors.newSingleThreadExecutor().submit(c).get()
@@ -238,7 +244,7 @@ class TodayActivity : AppCompatActivity() {
                                 fishingDao.insertLanded(
                                     Landed(
                                         weight = field.text.toString().toDouble(),
-                                        timestamp = Date(),
+                                        timestamp = timestamp,
                                         speciesId = (field.getTag(R.id.species_id_key) as Int)
                                     )
                                 ).toInt()
