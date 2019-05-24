@@ -78,7 +78,7 @@ class PescarApplication : Application() {
 
             if (towsToUpload.isNotEmpty() || landedsToUpload.isNotEmpty() || positionsToUpload.isNotEmpty()) {
                 val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
-                df.timeZone = TimeZone.getTimeZone("UTC")
+                //df.timeZone = TimeZone.getTimeZone("UTC")
 
                 val towsJson = JSONArray()
                 towsToUpload.forEach { tow ->
@@ -95,7 +95,7 @@ class PescarApplication : Application() {
                     landedJson.put("id", lws.landed.id)
                     landedJson.put("species", lws.species.first().name)
                     landedJson.put("weight", lws.landed.weight)
-                    landedJson.put("timestamp", lws.landed.timestamp)
+                    landedJson.put("timestamp", df.format(lws.landed.timestamp))
                     landedsJson.put(landedJson)
                 }
 
@@ -106,7 +106,7 @@ class PescarApplication : Application() {
                     positionJson.put("latitude", pos.latitude)
                     positionJson.put("longitude", pos.longitude)
                     positionJson.put("accuracy", pos.accuracy)
-                    positionJson.put("timestamp", pos.timestamp)
+                    positionJson.put("timestamp", df.format(pos.timestamp))
                     positionsJson.put(positionJson)
                 }
 

@@ -188,7 +188,7 @@ class ArchiveActivity : AppCompatActivity() {
         if (field.text.matches("\\d+(\\.\\d+)?".toRegex())) {
             if (field.tag is Number) {
                 Executors.newSingleThreadExecutor().execute {
-                    fishingDao.updateTow((field.tag as Int), field.text.toString().toDouble(), Date())
+                    fishingDao.updateTow((field.tag as Int), field.text.toString().toDouble(), timestamp)
                 }
             } else {
                 val c = Callable {
@@ -268,7 +268,7 @@ class ArchiveActivity : AppCompatActivity() {
             if (field.getTag(R.id.landed_id_key) is Number) {
                 Executors.newSingleThreadExecutor().execute {
                     fishingDao.updateLanded(
-                        (field.getTag(R.id.landed_id_key) as Int), field.text.toString().toDouble(), Date()
+                        (field.getTag(R.id.landed_id_key) as Int), field.text.toString().toDouble(), timestamp
                     )
                 }
             }
