@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.InputType
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_today.*
@@ -200,6 +201,7 @@ class TodayActivity : AppCompatActivity() {
             landeds.forEach { landed ->
                 disableField(landed.second  )
             }
+            submitButton.visibility = View.GONE
         }
 
         //Set listeners
@@ -277,6 +279,7 @@ class TodayActivity : AppCompatActivity() {
             landeds.forEach { landed ->
                 disableField(landed.second  )
             }
+            submitButton.visibility = View.GONE
         }
 
         //Set listeners
@@ -325,6 +328,7 @@ class TodayActivity : AppCompatActivity() {
             submitTow(landed)
             disableField(landed)
         }
+        submitButton.visibility = View.GONE
     }
 
     private fun disableField(field: EditText) {

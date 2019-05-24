@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import android.text.InputType
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_today.*
@@ -169,6 +170,7 @@ class ArchiveActivity : AppCompatActivity() {
             landeds.forEach { landed ->
                 disableField(landed.second  )
             }
+            submitButton.visibility = View.GONE
         }
 
         //Set listeners
@@ -244,8 +246,9 @@ class ArchiveActivity : AppCompatActivity() {
                 disableField(tow)
             }
             landeds.forEach { landed ->
-                disableField(landed.second  )
+                disableField(landed.second)
             }
+            submitButton.visibility = View.GONE
         }
 
         //Set listeners
@@ -294,6 +297,7 @@ class ArchiveActivity : AppCompatActivity() {
             submitTow(landed)
             disableField(landed)
         }
+        submitButton.visibility = View.GONE
     }
 
     private fun disableField(field: EditText) {
