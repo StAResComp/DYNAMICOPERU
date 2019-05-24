@@ -11,6 +11,8 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import uk.ac.standrews.pescar.track.Position
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
@@ -27,7 +29,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-        this.title = "${Date(intent.getLongExtra("started_at",0)).toLocaleString()} - ${Date(intent.getLongExtra("finished_at",0)).toLocaleString()}"
+        val df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault()) as SimpleDateFormat
+        this.title = "${df.format(Date(intent.getLongExtra("started_at",0)))} - ${df.format(Date(intent.getLongExtra("finished_at",0)))}"
         val actionBar = this.supportActionBar
         actionBar!!.setDisplayHomeAsUpEnabled(true)
     }

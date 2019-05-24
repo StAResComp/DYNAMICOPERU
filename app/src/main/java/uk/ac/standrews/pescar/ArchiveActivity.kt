@@ -13,6 +13,8 @@ import android.widget.TextView
 import uk.ac.standrews.pescar.fishing.FishingDao
 import uk.ac.standrews.pescar.fishing.Landed
 import uk.ac.standrews.pescar.fishing.Tow
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
@@ -46,7 +48,8 @@ class ArchiveActivity : AppCompatActivity() {
         setContentView(R.layout.activity_archive)
 
         var tripInfo: TextView = findViewById(R.id.trip_info)
-        tripInfo.setText("${day.first.toLocaleString()} - ${day.second.toLocaleString()}")
+        val df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault()) as SimpleDateFormat
+        tripInfo.setText("${df.format(day.first)} - ${df.format(day.second)}")
 
         mapButton = findViewById(R.id.map_button)
 
@@ -62,6 +65,7 @@ class ArchiveActivity : AppCompatActivity() {
         }
 
         //Navigation
+        navigation.menu.getItem(1).setChecked(true)
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
 

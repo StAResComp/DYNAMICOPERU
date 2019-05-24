@@ -17,6 +17,8 @@ import android.widget.TextView
 import uk.ac.standrews.pescar.fishing.FishingDao
 import uk.ac.standrews.pescar.fishing.Landed
 import uk.ac.standrews.pescar.fishing.Tow
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
@@ -51,7 +53,8 @@ class TodayActivity : AppCompatActivity() {
         setContentView(R.layout.activity_today)
 
         var tripInfo: TextView = findViewById(R.id.trip_info)
-        tripInfo.setText("${today.first.toLocaleString()} - ${today.second.toLocaleString()}")
+        val df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault()) as SimpleDateFormat
+        tripInfo.setText("${df.format(today.first)} - ${df.format(today.second)}")
 
         mapButton = findViewById(R.id.map_button)
 
