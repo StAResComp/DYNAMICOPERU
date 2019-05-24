@@ -8,7 +8,7 @@
     <!-- Screen titles -->
     <string name="title_today">Today</string>
     <string name="title_archive">Archive</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_settings">Settings</string>
 
     <!-- Fishing activity details -->
     <string name="tow_1">Cala 1</string>

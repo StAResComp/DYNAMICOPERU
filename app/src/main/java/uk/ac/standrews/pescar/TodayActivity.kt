@@ -146,7 +146,7 @@ class TodayActivity : AppCompatActivity() {
             }
             R.id.navigation_archive -> {
                 val cal = Calendar.getInstance()
-                val dpd = DatePickerDialog(this@TodayActivity, DatePickerDialog.OnDateSetListener { view, year, month, day ->
+                val dpd = DatePickerDialog(this@TodayActivity, DatePickerDialog.OnDateSetListener { _, year, month, day ->
                     val intent = Intent(this, ArchiveActivity::class.java)
                     val picked = Calendar.getInstance()
                     picked.set(Calendar.YEAR, year)
@@ -162,7 +162,7 @@ class TodayActivity : AppCompatActivity() {
                 dpd.show()
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_notifications -> {
+            R.id.navigation_settings -> {
                 return@OnNavigationItemSelectedListener true
             }
         }
