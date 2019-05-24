@@ -2,13 +2,13 @@
 
     <string name="app_name">Pescar</string>
 
-    <string name="yes">Yes</string>
+    <string name="yes">Si</string>
     <string name="no">No</string>
 
     <!-- Screen titles -->
-    <string name="title_today">Today</string>
-    <string name="title_archive">Archive</string>
-    <string name="title_settings">Settings</string>
+    <string name="title_today">Hoy</string>
+    <string name="title_archive">Archivo</string>
+    <string name="title_settings">Ajustes</string>
 
     <!-- Fishing activity details -->
     <string name="tow_1">Cala 1</string>
@@ -30,8 +30,8 @@
     <string name="species_6">Guitarra</string>
 
     <!-- Submission confirmation alert -->
-    <string name="confirm_submit_title">Confirm Submission</string>
-    <string name="confirm_submit_message">Are you sure you want to submit data for this day? It can\'t be altered after this.</string>
+    <string name="confirm_submit_title">Confirmar envío</string>
+    <string name="confirm_submit_message">Está seguro que desea enviar los datos? No podrá alterar datos después del envío</string>
 
     <!-- Buttons -->
     <string name="submit">Submitir</string>
@@ -46,7 +46,7 @@
     <string name="tracking_notification_text">El App está registrando su ubicación</string>
 
     <!-- Map -->
-    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps">Mapa</string>
 
     <!-- Archive -->
     <string name="title_activity_archive">Archivo</string>
