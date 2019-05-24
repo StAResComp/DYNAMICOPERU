@@ -6,11 +6,13 @@ import android.app.DatePickerDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.text.InputType
 import android.widget.Button
 import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_today.*
@@ -183,9 +185,21 @@ class TodayActivity : AppCompatActivity() {
             fishingDao.getTowsForPeriod(today.first, today.second)
         }
         val towList = Executors.newSingleThreadExecutor().submit(towsCallable).get()
+        var uploaded = false
         towList.forEachIndexed { index, tow ->
             tows[index].tag = tow.id
             tows[index].setText(tow.weight.toString())
+            if (tow.uploaded != null) {
+                uploaded = true
+            }
+        }
+        if (uploaded) {
+            tows.forEach { tow ->
+                disableField(tow)
+            }
+            landeds.forEach { landed ->
+                disableField(landed.second  )
+            }
         }
 
         //Set listeners
@@ -193,21 +207,25 @@ class TodayActivity : AppCompatActivity() {
             textField.setOnFocusChangeListener { view, hasFocus ->
                 if (!hasFocus) {
                     val field = view as EditText
-                    if (field.text.matches("\\d+(\\.\\d+)?".toRegex())) {
-                        if (field.tag is Number) {
-                            Executors.newSingleThreadExecutor().execute {
-                                fishingDao.updateTow((field.tag as Int), field.text.toString().toDouble(), Date())
-                            }
-                        } else {
-                            val c = Callable {
-                                fishingDao.insertTow(
-                                    Tow(weight = field.text.toString().toDouble(), timestamp = timestamp)
-                                ).toInt()
-                            }
-                            field.tag = Executors.newSingleThreadExecutor().submit(c).get()
-                        }
-                    }
+                    submitTow(field)
                 }
+            }
+        }
+    }
+
+    private fun submitTow(field: EditText) {
+        if (field.text.matches("\\d+(\\.\\d+)?".toRegex())) {
+            if (field.tag is Number) {
+                Executors.newSingleThreadExecutor().execute {
+                    fishingDao.updateTow((field.tag as Int), field.text.toString().toDouble(), Date())
+                }
+            } else {
+                val c = Callable {
+                    fishingDao.insertTow(
+                        Tow(weight = field.text.toString().toDouble(), timestamp = timestamp)
+                    ).toInt()
+                }
+                field.tag = Executors.newSingleThreadExecutor().submit(c).get()
             }
         }
     }
@@ -233,6 +251,7 @@ class TodayActivity : AppCompatActivity() {
             fishingDao.getLandedsForPeriod(today.first, today.second)
         }
         val landedsList = Executors.newSingleThreadExecutor().submit(landedsCallable).get()
+        var uploaded = false
         speciesList.forEachIndexed { index, species ->
             landeds[index].first.text = species.name
             var empty = true
@@ -242,11 +261,22 @@ class TodayActivity : AppCompatActivity() {
                     landeds[index].second.setText(lws.landed.weight.toString())
                     empty = false
                 }
+                if (lws.landed.uploaded != null) {
+                    uploaded = true
+                }
             }
             if (empty) {
                 landeds[index].second.setTag(R.id.landed_id_key, false)
             }
             landeds[index].second.setTag(R.id.species_id_key, species.id)
+        }
+        if (uploaded) {
+            tows.forEach { tow ->
+                disableField(tow)
+            }
+            landeds.forEach { landed ->
+                disableField(landed.second  )
+            }
         }
 
         //Set listeners
@@ -255,33 +285,54 @@ class TodayActivity : AppCompatActivity() {
             textField.setOnFocusChangeListener { view, hasFocus ->
                 if (!hasFocus) {
                     val field = view as EditText
-                    if (field.text.matches("\\d+(\\.\\d+)?".toRegex())) {
-                        if (field.getTag(R.id.landed_id_key) is Number) {
-                            Executors.newSingleThreadExecutor().execute {
-                                fishingDao.updateLanded(
-                                    (field.getTag(R.id.landed_id_key) as Int), field.text.toString().toDouble(), Date()
-                                )
-                            }
-                        }
-                        else {
-                            val c = Callable {
-                                fishingDao.insertLanded(
-                                    Landed(
-                                        weight = field.text.toString().toDouble(),
-                                        timestamp = timestamp,
-                                        speciesId = (field.getTag(R.id.species_id_key) as Int)
-                                    )
-                                ).toInt()
-                            }
-                            field.setTag(R.id.landed_id_key, Executors.newSingleThreadExecutor().submit(c).get())
-                        }
-                    }
+                    submitLanded(field)
                 }
             }
         }
     }
 
-    private fun submitData() {
+    private fun submitLanded(field: EditText) {
+        if (field.text.matches("\\d+(\\.\\d+)?".toRegex())) {
+            if (field.getTag(R.id.landed_id_key) is Number) {
+                Executors.newSingleThreadExecutor().execute {
+                    fishingDao.updateLanded(
+                        (field.getTag(R.id.landed_id_key) as Int), field.text.toString().toDouble(), Date()
+                    )
+                }
+            }
+            else {
+                val c = Callable {
+                    fishingDao.insertLanded(
+                        Landed(
+                            weight = field.text.toString().toDouble(),
+                            timestamp = timestamp,
+                            speciesId = (field.getTag(R.id.species_id_key) as Int)
+                        )
+                    ).toInt()
+                }
+                field.setTag(R.id.landed_id_key, Executors.newSingleThreadExecutor().submit(c).get())
+            }
+        }
+    }
 
+    private fun submitData() {
+        tows.forEach { tow ->
+            submitTow(tow)
+            disableField(tow)
+        }
+        landeds.forEach { pair ->
+            val landed = pair.second
+            submitTow(landed)
+            disableField(landed)
+        }
+    }
+
+    private fun disableField(field: EditText) {
+        field.setFocusable(false)
+        field.setEnabled(false)
+        field.setCursorVisible(false)
+        field.keyListener = null
+        field.inputType = InputType.TYPE_NULL
+        field.setBackgroundColor(Color.TRANSPARENT)
     }
 }
