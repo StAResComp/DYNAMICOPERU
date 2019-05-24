@@ -43,12 +43,12 @@ interface FishingDao {
     @Query("UPDATE landed SET weight = :weight, timestamp = :timestamp WHERE id = :id")
     fun updateLanded(id: Int, weight: Double, timestamp: Date)
 
-    @Query("SELECT * FROM tow WHERE uploaded IS NULL")
-    fun getUnuploadedTows(): List<Tow>
+    @Query("SELECT * FROM tow WHERE uploaded IS NULL AND timestamp >= :startedAt AND timestamp < :finishedAt")
+    fun getUnuploadedTowsForPeriod(startedAt: Date, finishedAt: Date): List<Tow>
 
     @Transaction
-    @Query("SELECT * FROM landed WHERE uploaded IS NULL")
-    fun getUnuploadedLandeds(): List<LandedWithSpecies>
+    @Query("SELECT * FROM landed WHERE uploaded IS NULL AND timestamp >= :startedAt AND timestamp < :finishedAt")
+    fun getUnuploadedLandedsForPeriod(startedAt: Date, finishedAt: Date): List<LandedWithSpecies>
 
     @Query("UPDATE tow SET uploaded = :timestamp WHERE id IN (:ids)")
     fun markTowsUploaded(ids: List<Int>, timestamp: Date)

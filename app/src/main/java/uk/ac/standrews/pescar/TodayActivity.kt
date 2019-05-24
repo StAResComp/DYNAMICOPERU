@@ -321,14 +321,21 @@ class TodayActivity : AppCompatActivity() {
     private fun submitData() {
         tows.forEach { tow ->
             submitTow(tow)
-            disableField(tow)
         }
         landeds.forEach { pair ->
             val landed = pair.second
-            submitTow(landed)
-            disableField(landed)
+            submitLanded(landed)
         }
-        submitButton.visibility = View.GONE
+        if ((this.application as PescarApplication).postData(today)) {
+            tows.forEach { tow ->
+                disableField(tow)
+            }
+            landeds.forEach { pair ->
+                val landed = pair.second
+                disableField(landed)
+            }
+            submitButton.visibility = View.GONE
+        }
     }
 
     private fun disableField(field: EditText) {
