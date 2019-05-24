@@ -3,6 +3,7 @@ package uk.ac.standrews.pescar.fishing
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.Query
+import android.arch.persistence.room.Transaction
 import java.util.Date
 
 /**
@@ -35,6 +36,7 @@ interface FishingDao {
     @Query("UPDATE tow SET weight = :weight, timestamp = :timestamp WHERE id = :id")
     fun updateTow(id: Int, weight: Double, timestamp: Date)
 
+    @Transaction
     @Query("SELECT l.* FROM species s INNER JOIN landed l ON s.id = l.species_id WHERE l.timestamp >= :startedAt AND l.timestamp < :finishedAt ORDER BY s.id ASC")
     fun getLandedsForPeriod(startedAt: Date, finishedAt: Date): Array<LandedWithSpecies>
 
@@ -44,6 +46,7 @@ interface FishingDao {
     @Query("SELECT * FROM tow WHERE uploaded IS NULL")
     fun getUnuploadedTows(): List<Tow>
 
+    @Transaction
     @Query("SELECT * FROM landed WHERE uploaded IS NULL")
     fun getUnuploadedLandeds(): List<LandedWithSpecies>
 
