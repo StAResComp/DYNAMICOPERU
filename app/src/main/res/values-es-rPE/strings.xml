@@ -29,9 +29,9 @@
     <string name="species_5">Calamar</string>
     <string name="species_6">Guitarra</string>
 
-    <!-- Trip confirmation alert -->
-    <string name="new_trip_title">New Trip?</string>
-    <string name="new_trip_question">Is this the start of a new trip?</string>
+    <!-- Submission confirmation alert -->
+    <string name="confirm_submit_title">Confirm Submission</string>
+    <string name="confirm_submit_message">Are you sure you want to submit this data? It can\'t be altered after this.</string>
 
     <!-- Buttons -->
     <string name="submit">Submitir</string>

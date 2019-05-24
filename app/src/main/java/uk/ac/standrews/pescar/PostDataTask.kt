@@ -60,7 +60,7 @@ class PostDataTask(val context: Context) : AsyncTask<Void, Void, Void>() {
 
             val json = JSONObject()
             json.put("tows", towsJson)
-            json.put("landeds", landedsJson)
+            json.put("hauls", landedsJson)
             json.put("positions", positionsJson)
 
             val url = ""
@@ -72,12 +72,12 @@ class PostDataTask(val context: Context) : AsyncTask<Void, Void, Void>() {
                     for (tow in 0 until towsJson.length()) {
                         towIds.add((tow as JSONObject).getInt("id"))
                     }
-                    val landedsJson = result.getJSONArray("landeds")
+                    val landedsJson = result.getJSONArray("hauls")
                     val landedIds = arrayListOf<Int>()
                     for (landed in 0 until landedsJson.length()) {
                         landedIds.add((landed as JSONObject).getInt("id"))
                     }
-                    val positionsJson = result.getJSONArray("landeds")
+                    val positionsJson = result.getJSONArray("positions")
                     val positionIds = arrayListOf<Int>()
                     for (position in 0 until positionsJson.length()) {
                         positionIds.add((position as JSONObject).getInt("id"))

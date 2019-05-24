@@ -229,6 +229,12 @@
                     android:hint="@string/weight"
                     android:inputType="numberDecimal"/>
 
+            <Button
+                    android:id="@+id/submit_button"
+                    android:layout_columnSpan="2"
+                    android:layout_gravity="center"
+                    android:text="@string/submit"/>
+
         </GridLayout>
 
     </ScrollView>

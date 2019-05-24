@@ -1,7 +1,9 @@
 package uk.ac.standrews.pescar
 
 import android.Manifest
+import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -31,6 +33,7 @@ class TodayActivity : AppCompatActivity() {
     //Need to be bound to widget in onCreate
     private lateinit var tracker: Switch
     private lateinit var mapButton: Button
+    private lateinit var submitButton: Button
     private lateinit var tows: Array<EditText>
     private lateinit var landeds: Array<Pair<TextView, EditText>>
     private lateinit var fishingDao: FishingDao
@@ -70,6 +73,24 @@ class TodayActivity : AppCompatActivity() {
         }
 
         setUpTracker()
+
+        submitButton = findViewById(R.id.submit_button)
+
+        submitButton.setOnClickListener {
+            val builder = AlertDialog.Builder(this@TodayActivity)
+            builder.setTitle(R.string.confirm_submit_title)
+            builder.setMessage(R.string.confirm_submit_message)
+            builder.setIcon(R.drawable.ic_warning_black_24dp)
+            builder.setPositiveButton(R.string.yes, DialogInterface.OnClickListener { dialog, _ ->
+                submitData()
+                dialog.dismiss()
+            })
+            builder.setNegativeButton(R.string.no, DialogInterface.OnClickListener { dialog, _ ->
+                dialog.dismiss()
+            })
+            val alert = builder.create()
+            alert.show()
+        }
 
         //Navigation
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
@@ -258,5 +279,9 @@ class TodayActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun submitData() {
+
     }
 }

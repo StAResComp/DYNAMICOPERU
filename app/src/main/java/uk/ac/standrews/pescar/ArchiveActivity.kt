@@ -1,6 +1,8 @@
 package uk.ac.standrews.pescar
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -26,6 +28,7 @@ class ArchiveActivity : AppCompatActivity() {
 
     //Need to be bound to widget in onCreate
     private lateinit var mapButton: Button
+    private lateinit var submitButton: Button
     private lateinit var tows: Array<EditText>
     private lateinit var landeds: Array<Pair<TextView, EditText>>
     private lateinit var fishingDao: FishingDao
@@ -62,6 +65,24 @@ class ArchiveActivity : AppCompatActivity() {
             intent.putExtra("started_at", day.first.time)
             intent.putExtra("finished_at", day.second.time)
             startActivity(intent)
+        }
+
+        submitButton = findViewById(R.id.submit_button)
+
+        submitButton.setOnClickListener {
+            val builder = AlertDialog.Builder(this@ArchiveActivity)
+            builder.setTitle(R.string.confirm_submit_title)
+            builder.setMessage(R.string.confirm_submit_message)
+            builder.setIcon(R.drawable.ic_warning_black_24dp)
+            builder.setPositiveButton(R.string.yes, DialogInterface.OnClickListener { dialog, _ ->
+                submitData()
+                dialog.dismiss()
+            })
+            builder.setNegativeButton(R.string.no, DialogInterface.OnClickListener { dialog, _ ->
+                dialog.dismiss()
+            })
+            val alert = builder.create()
+            alert.show()
         }
 
         //Navigation
@@ -227,5 +248,9 @@ class ArchiveActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun submitData() {
+
     }
 }
