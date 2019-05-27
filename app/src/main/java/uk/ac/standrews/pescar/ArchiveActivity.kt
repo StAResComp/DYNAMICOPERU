@@ -1,5 +1,6 @@
 package uk.ac.standrews.pescar
 
+import android.Manifest
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.DialogInterface
@@ -8,6 +9,8 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.InputType
 import android.view.View
@@ -27,7 +30,7 @@ import java.util.concurrent.Executors
 /**
  * Archive Activity. Where users view/enter details of previous days' catch
  */
-class ArchiveActivity : AppCompatActivity() {
+open class ArchiveActivity : AppCompatActivity() {
 
     //Need to be bound to widget in onCreate
     private lateinit var mapButton: Button
@@ -35,15 +38,15 @@ class ArchiveActivity : AppCompatActivity() {
     private lateinit var tows: Array<EditText>
     private lateinit var landeds: Array<Pair<TextView, EditText>>
     private lateinit var fishingDao: FishingDao
-    private lateinit var day: Pair<Date, Date>
-    private lateinit var timestamp: Date
+    lateinit var day: Pair<Date, Date>
+     lateinit var timestamp: Date
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         fishingDao = AppDatabase.getAppDataBase(this).fishingDao()
 
-        day = (this.application as PescarApplication).getPeriodBoundaries(Date(intent.getLongExtra("midnight",0)))
+        setDayAndTime()
 
         val c = Calendar.getInstance()
         c.time = day.first
@@ -51,13 +54,33 @@ class ArchiveActivity : AppCompatActivity() {
         timestamp = c.time
 
         //Bind to layout
-        setContentView(R.layout.activity_archive)
+        bindView()
 
         var tripInfo: TextView = findViewById(R.id.trip_info)
         val df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault()) as SimpleDateFormat
         tripInfo.setText("${df.format(day.first)} - ${df.format(day.second)}")
 
         mapButton = findViewById(R.id.map_button)
+
+        tows = arrayOf(
+            findViewById(R.id.tow_1),
+            findViewById(R.id.tow_2),
+            findViewById(R.id.tow_3),
+            findViewById(R.id.tow_4),
+            findViewById(R.id.tow_5),
+            findViewById(R.id.tow_6)
+        )
+
+        landeds = arrayOf(
+            Pair(findViewById(R.id.species_1_label), findViewById(R.id.species_1)),
+            Pair(findViewById(R.id.species_2_label), findViewById(R.id.species_2)),
+            Pair(findViewById(R.id.species_3_label), findViewById(R.id.species_3)),
+            Pair(findViewById(R.id.species_4_label), findViewById(R.id.species_4)),
+            Pair(findViewById(R.id.species_5_label), findViewById(R.id.species_5)),
+            Pair(findViewById(R.id.species_6_label), findViewById(R.id.species_6))
+        )
+
+        submitButton = findViewById(R.id.submit_button)
 
         doTowFields()
 
@@ -69,8 +92,6 @@ class ArchiveActivity : AppCompatActivity() {
             intent.putExtra("finished_at", day.second.time)
             startActivity(intent)
         }
-
-        submitButton = findViewById(R.id.submit_button)
 
         submitButton.setOnClickListener {
             val builder = AlertDialog.Builder(this@ArchiveActivity)
@@ -89,8 +110,19 @@ class ArchiveActivity : AppCompatActivity() {
         }
 
         //Navigation
-        navigation.menu.getItem(1).setChecked(true)
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+    }
+
+    open fun bindView() {
+        setContentView(R.layout.activity_archive)
+    }
+
+    open fun setDayAndTime() {
+        day = (this.application as PescarApplication).getPeriodBoundaries(Date(intent.getLongExtra("midnight",0)))
+        val c = Calendar.getInstance()
+        c.time = day.first
+        c.add(Calendar.HOUR_OF_DAY, 12)
+        timestamp = c.time
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -109,8 +141,6 @@ class ArchiveActivity : AppCompatActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_today -> {
-                val intent = Intent(this, TodayActivity::class.java)
-                startActivity(intent)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_archive -> {
@@ -139,16 +169,6 @@ class ArchiveActivity : AppCompatActivity() {
     }
 
     private fun doTowFields() {
-
-        //Get views
-        tows = arrayOf(
-            findViewById(R.id.tow_1),
-            findViewById(R.id.tow_2),
-            findViewById(R.id.tow_3),
-            findViewById(R.id.tow_4),
-            findViewById(R.id.tow_5),
-            findViewById(R.id.tow_6)
-        )
 
         //Get existing values
         val towsCallable = Callable {
@@ -202,16 +222,6 @@ class ArchiveActivity : AppCompatActivity() {
     }
 
     private fun doLandedFields() {
-
-        //Get views
-        landeds = arrayOf(
-            Pair(findViewById(R.id.species_1_label), findViewById(R.id.species_1)),
-            Pair(findViewById(R.id.species_2_label), findViewById(R.id.species_2)),
-            Pair(findViewById(R.id.species_3_label), findViewById(R.id.species_3)),
-            Pair(findViewById(R.id.species_4_label), findViewById(R.id.species_4)),
-            Pair(findViewById(R.id.species_5_label), findViewById(R.id.species_5)),
-            Pair(findViewById(R.id.species_6_label), findViewById(R.id.species_6))
-        )
 
         //Get existing values
         var speciesCallable = Callable {

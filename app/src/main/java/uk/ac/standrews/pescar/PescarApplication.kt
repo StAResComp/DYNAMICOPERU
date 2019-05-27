@@ -67,7 +67,7 @@ class PescarApplication : Application() {
     }
 
     fun postData(day: Pair<Date, Date>): Boolean {
-        var success = false
+        var success = true
         Executors.newSingleThreadExecutor().execute {
             val db = AppDatabase.getAppDataBase(this@PescarApplication)
             val fishingDao = db.fishingDao()
@@ -115,27 +115,27 @@ class PescarApplication : Application() {
                 json.put("tows", towsJson)
                 json.put("hauls", landedsJson)
                 json.put("positions", positionsJson)
-                Log.e("JSON", json.toString(4))
 
-                val url = "https://arts.st-andrews.ac.uk/pescar"
+                val url = "https://arts.st-andrews.ac.uk/pescar/index.php"
 
                 val callback = object : VolleyCallback {
                     override fun onSuccess(result: JSONObject) {
-                        success = true
                         val towsJson = result.getJSONArray("tows")
                         val towIds = arrayListOf<Int>()
-                        for (tow in 0 until towsJson.length()) {
-                            towIds.add((tow as JSONObject).getInt("id"))
+                        if (towsJson.length() > 0) {
+                            for (i in 0 until towsJson.length()) {
+                                towIds.add((towsJson[i] as JSONObject).getInt("id"))
+                            }
                         }
                         val landedsJson = result.getJSONArray("hauls")
                         val landedIds = arrayListOf<Int>()
-                        for (landed in 0 until landedsJson.length()) {
-                            landedIds.add((landed as JSONObject).getInt("id"))
+                        for (i in 0 until landedsJson.length()) {
+                            landedIds.add((landedsJson[i] as JSONObject).getInt("id"))
                         }
                         val positionsJson = result.getJSONArray("positions")
                         val positionIds = arrayListOf<Int>()
-                        for (position in 0 until positionsJson.length()) {
-                            positionIds.add((position as JSONObject).getInt("id"))
+                        for (i in 0 until positionsJson.length()) {
+                            positionIds.add((positionsJson[i] as JSONObject).getInt("id"))
                         }
                         Executors.newSingleThreadExecutor().execute {
                             if (towIds.isNotEmpty()) {
@@ -176,7 +176,6 @@ class PescarApplication : Application() {
 
                     override fun onError(result: String?) {
                         //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                        Log.e("POST", "Submission unsuccessful: $result")
                     }
                 }
 
