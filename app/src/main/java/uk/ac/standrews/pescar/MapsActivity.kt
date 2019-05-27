@@ -67,7 +67,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         else {
             positions.forEach {
                 addMarkerToMap(it, first)
-                mMap.addMarker(MarkerOptions().position(LatLng(it.latitude, it.longitude)))
                 first = false
 
             }
@@ -75,7 +74,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun addMarkerToMap(position: Position, first: Boolean = false) {
-        mMap.addMarker(MarkerOptions().position(LatLng(position.latitude, position.longitude)))
+        mMap.addMarker(MarkerOptions().position(LatLng(position.latitude, position.longitude)).title("${position.latitude}, ${position.longitude} / ${position.timestamp.hours}:${position.timestamp.minutes}:${position.timestamp.seconds}"))
         if (first) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(position.latitude, position.longitude), 8.0f))
         }
