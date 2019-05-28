@@ -141,7 +141,8 @@ open class ArchiveActivity : AppCompatActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_today -> {
-                return@OnNavigationItemSelectedListener true
+                val intent = Intent(this, TodayActivity::class.java)
+                startActivity(intent)
             }
             R.id.navigation_archive -> {
                 val cal = Calendar.getInstance()
