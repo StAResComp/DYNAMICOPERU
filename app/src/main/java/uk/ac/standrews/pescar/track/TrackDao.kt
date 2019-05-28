@@ -48,6 +48,15 @@ interface TrackDao {
     @Query(" SELECT * FROM position WHERE timestamp >= :startedAt AND timestamp < :finishedAt")
     fun getPositionsForPeriod(startedAt: Date, finishedAt: Date): List<Position>
 
+    @Query(" SELECT * FROM position WHERE timestamp >= :startedAt AND timestamp < :finishedAt ORDER BY id ASC LIMIT 1")
+    fun getFirstPositionForPeriod(startedAt: Date, finishedAt: Date): Position?
+
+    @Query(" SELECT * FROM position WHERE timestamp >= :startedAt AND timestamp < :finishedAt ORDER BY id DESC LIMIT 1")
+    fun getLastPositionForPeriod(startedAt: Date, finishedAt: Date): Position?
+
+    @Query(" SELECT * FROM position WHERE id IN (:ids)")
+    fun getPositions(ids: List<Int>): List<Position>
+
     @Query("SELECT * FROM position WHERE uploaded IS NULL")
     fun getUnuploadedPositions(): List<Position>
 }

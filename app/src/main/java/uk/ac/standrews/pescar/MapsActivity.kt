@@ -51,30 +51,39 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val finishedAt = Date(intent.getLongExtra("finished_at", Date().time))
         val trackDao = AppDatabase.getAppDataBase(this).trackDao()
         val c = Callable {
-            trackDao.getPositionsForPeriod(startedAt, finishedAt)
+            val firstPos = trackDao.getFirstPositionForPeriod(startedAt, finishedAt)
+            val secondPos = trackDao.getLastPositionForPeriod(startedAt, finishedAt)
+            if (firstPos != null && secondPos != null) {
+                val diff = secondPos.id - firstPos.id
+                val max_points = 100
+                if (diff <= max_points) {
+                    trackDao.getPositionsForPeriod(startedAt, finishedAt)
+                }
+                else {
+                    val interval = (ceil(diff.toDouble()/max_points)).toInt()   
+                    val ids = ArrayList<Int>()
+                    for (i in firstPos.id..secondPos.id step interval) {
+                        ids.add(i)
+                    }
+                    trackDao.getPositions(ids)
+                }
+            }
+            else {
+                ArrayList<Position>()
+            }
         }
         val positions = Executors.newSingleThreadExecutor().submit(c).get()
         Log.e("MAP", positions.size.toString())
-        val max_points = 100
-        var first = true
-        if (positions.size > max_points) {
-            val chunks = positions.chunked(ceil((positions.size as Double) / max_points) as Int)
-            chunks.forEach {
-                addMarkerToMap(it.first(), first)
-                first = false
-            }
-        }
-        else {
-            positions.forEach {
-                addMarkerToMap(it, first)
-                first = false
 
-            }
+        var first = true
+        positions.forEach {
+            addMarkerToMap(it, first)
+            first = false
         }
     }
 
     private fun addMarkerToMap(position: Position, first: Boolean = false) {
-        mMap.addMarker(MarkerOptions().position(LatLng(position.latitude, position.longitude)).title("${position.latitude}, ${position.longitude} / ${position.timestamp.hours}:${position.timestamp.minutes}:${position.timestamp.seconds}"))
+        mMap.addMarker(MarkerOptions().position(LatLng(position.latitude, position.longitude)).title("${String.format("%.2f", position.latitude)}, ${String.format("%.2f", position.longitude)} / ${position.timestamp.hours}:${position.timestamp.minutes}:${position.timestamp.seconds}"))
         if (first) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(position.latitude, position.longitude), 8.0f))
         }
