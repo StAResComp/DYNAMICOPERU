@@ -15,6 +15,9 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [
+                appAuthRedirectScheme: 'uk.ac.st-andrews.arts.pescar'
+        ]
     }
     buildTypes {
         release {
@@ -32,6 +35,9 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.android.support:support-vector-drawable:28.0.0'
     implementation 'android.arch.persistence.room:runtime:1.1.1'
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.google.android.material:material:1.0.0'
     kapt "android.arch.persistence.room:compiler:1.1.1"
     // Testing-only dependencies
     testImplementation 'junit:junit:4.12'

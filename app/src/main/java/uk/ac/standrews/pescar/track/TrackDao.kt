@@ -1,8 +1,6 @@
 package uk.ac.standrews.pescar.track
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.Query
+import androidx.room.*
 import java.util.Date
 
 /**

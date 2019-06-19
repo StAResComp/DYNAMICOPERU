@@ -1,7 +1,6 @@
 package uk.ac.standrews.pescar.fishing
 
-import android.arch.persistence.room.Embedded
-import android.arch.persistence.room.Relation
+import androidx.room.*
 
 class LandedWithSpecies {
     @Embedded

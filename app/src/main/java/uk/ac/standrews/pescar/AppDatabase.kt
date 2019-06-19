@@ -1,8 +1,8 @@
 package uk.ac.standrews.pescar
 
-import android.arch.persistence.db.SupportSQLiteDatabase
-import android.arch.persistence.room.*
+import androidx.room.*
 import android.content.Context
+import androidx.sqlite.db.SupportSQLiteDatabase
 import uk.ac.standrews.pescar.fishing.*
 import uk.ac.standrews.pescar.track.Position
 import uk.ac.standrews.pescar.track.TrackDao

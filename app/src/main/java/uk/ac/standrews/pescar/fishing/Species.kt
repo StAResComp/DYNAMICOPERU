@@ -1,7 +1,6 @@
 package uk.ac.standrews.pescar.fishing
 
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.*
 
 /**
  * Describes a species

@@ -1,6 +1,6 @@
 package uk.ac.standrews.pescar.fishing
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import java.util.*
 
 /**
