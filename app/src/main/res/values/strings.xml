@@ -31,7 +31,9 @@
 
     <!-- Submission confirmation alert -->
     <string name="confirm_submit_title">Confirm Submission</string>
-    <string name="confirm_submit_message">Are you sure you want to submit data for this day? It can\'t be altered after this.</string>
+    <string name="confirm_submit_message">Are you sure you want to submit data for this day? It can\'t be altered after
+        this.
+    </string>
 
     <!-- Buttons -->
     <string name="submit">Submit</string>
@@ -55,5 +57,6 @@
 
     <item type="id" name="landed_id_key"/>
     <item type="id" name="species_id_key"/>
+    <string name="title_activity_auth">AuthActivity</string>
 
 </resources>
