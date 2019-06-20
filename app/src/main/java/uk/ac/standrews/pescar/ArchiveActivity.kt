@@ -160,7 +160,8 @@ open class ArchiveActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_settings -> {
-                return@OnNavigationItemSelectedListener true
+                val intent = Intent(this, AuthActivity::class.java)
+                startActivity(intent)
             }
         }
         false
