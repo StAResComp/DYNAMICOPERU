@@ -2,6 +2,7 @@ package uk.ac.standrews.pescar
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -15,6 +16,7 @@ import kotlinx.android.synthetic.main.activity_today.*
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import net.openid.appauth.AuthState
 import uk.ac.standrews.pescar.fishing.FishingDao
 import uk.ac.standrews.pescar.fishing.Landed
 import uk.ac.standrews.pescar.fishing.Tow
@@ -23,6 +25,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
+import org.json.JSONException
+import android.text.TextUtils
+import android.content.Context.MODE_PRIVATE
+
+
 
 /**
  * Archive Activity. Where users view/enter details of previous days' catch
@@ -35,6 +42,7 @@ open class ArchiveActivity : AppCompatActivity() {
     private lateinit var tows: Array<EditText>
     private lateinit var landeds: Array<Pair<TextView, EditText>>
     private lateinit var fishingDao: FishingDao
+    private var authState: AuthState? = null
     lateinit var day: Pair<Date, Date>
     lateinit var timestamp: Date
 
@@ -108,6 +116,22 @@ open class ArchiveActivity : AppCompatActivity() {
 
         //Navigation
         (navigation as BottomNavigationView).setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+
+        authState = restoreAuthState()
+    }
+
+    private fun restoreAuthState(): AuthState? {
+        val jsonString = getSharedPreferences("AuthStatePreference", Context.MODE_PRIVATE)
+            .getString("AUTH_STATE", null)
+        if (!TextUtils.isEmpty(jsonString)) {
+            try {
+                return AuthState.jsonDeserialize(jsonString)
+            } catch (jsonException: JSONException) {
+                // should never happen
+            }
+
+        }
+        return null
     }
 
     open fun bindView() {
@@ -304,7 +328,7 @@ open class ArchiveActivity : AppCompatActivity() {
             val landed = pair.second
             submitLanded(landed)
         }
-        if ((this.application as PescarApplication).postData(day)) {
+        if ((this.application as PescarApplication).postData(day, authState)) {
             tows.forEach { tow ->
                 disableField(tow)
             }
