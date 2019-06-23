@@ -27,7 +27,7 @@ import java.util.concurrent.Executors
  */
 class TrackService : Service() {
 
-    private val _locationInterval: Long = 30000
+    private val _locationInterval: Long = 120000
     private val _locationDistance: Float = 5f
     private val _trackingNotificationId: Int = 568
     private val _pescarTrackingChannel: String = "pescar_tracking_channel"
