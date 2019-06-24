@@ -12,8 +12,8 @@
         android:title="@string/title_archive"/>
 
     <item
-        android:id="@+id/navigation_settings"
-        android:icon="@drawable/ic_settings_black_24dp"
-        android:title="@string/title_settings"/>
+        android:id="@+id/navigation_link"
+        android:icon="@drawable/ic_import_export_black_24dp"
+        android:title="@string/title_link"/>
 
 </menu>

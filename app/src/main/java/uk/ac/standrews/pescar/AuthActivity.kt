@@ -24,6 +24,8 @@ import net.openid.appauth.AuthorizationResponse
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import kotlinx.android.synthetic.main.activity_auth.navigation
+import kotlinx.android.synthetic.main.activity_today.*
 
 
 class AuthActivity : AppCompatActivity() {
@@ -42,6 +44,7 @@ class AuthActivity : AppCompatActivity() {
         authBtn = findViewById(R.id.auth_button)
         authText = findViewById(R.id.auth_text)
         (navigation as BottomNavigationView).setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        (navigation as BottomNavigationView).menu.findItem(R.id.navigation_link).isChecked = true
 
         enablePostAuthorizationFlows()
 
@@ -157,7 +160,7 @@ class AuthActivity : AppCompatActivity() {
                 dpd.show()
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_settings -> {
+            R.id.navigation_link -> {
                 return@OnNavigationItemSelectedListener true
             }
         }

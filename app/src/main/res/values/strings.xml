@@ -56,6 +56,7 @@
     <string name="title_activity_archive">Archive</string>
 
     <!-- Auth -->
+    <string name="title_link">Link</string>
     <string name="title_activity_auth">Account Linking</string>
     <string name="please_authorize">Click the button below to link this app to an account on the server.</string>
     <string name="already_authorized">This app is linked to an account on the server. Click the button below to refresh the link if necessary.</string>

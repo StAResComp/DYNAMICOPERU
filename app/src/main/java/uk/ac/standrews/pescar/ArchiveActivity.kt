@@ -116,6 +116,7 @@ open class ArchiveActivity : AppCompatActivity() {
 
         //Navigation
         (navigation as BottomNavigationView).setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        (navigation as BottomNavigationView).menu.findItem(R.id.navigation_archive).isChecked = true
 
         authState = restoreAuthState()
     }
@@ -183,7 +184,7 @@ open class ArchiveActivity : AppCompatActivity() {
                 dpd.show()
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_settings -> {
+            R.id.navigation_link -> {
                 val intent = Intent(this, AuthActivity::class.java)
                 startActivity(intent)
             }
