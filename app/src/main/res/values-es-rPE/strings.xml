@@ -55,6 +55,8 @@
     <string name="title_activity_archive">Archivo</string>
 
     <!-- Auth -->
-    <string name="title_activity_auth">Autorización</string>
+    <string name="title_activity_auth">Vinculación de cuenta</string>
+    <string name="please_authorize">Haga clic en el botón de abajo para vincular esta aplicación a una cuenta en el servidor.</string>
+    <string name="already_authorized">Esta aplicación está vinculada a una cuenta en el servidor. Haga clic en el botón de abajo para actualizar el enlace si es necesario.</string>
 
 </resources>

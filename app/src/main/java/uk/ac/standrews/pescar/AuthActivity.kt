@@ -22,9 +22,8 @@ import android.app.PendingIntent
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationResponse
 import android.util.Log
-import android.widget.Toast
-import android.R.attr.action
-
+import android.view.View
+import android.widget.TextView
 
 
 class AuthActivity : AppCompatActivity() {
@@ -34,12 +33,14 @@ class AuthActivity : AppCompatActivity() {
     private val USED_INTENT = "USED_INTENT"
 
     private lateinit var authBtn: Button
+    private lateinit var authText: TextView
     private var authState: AuthState? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
         authBtn = findViewById(R.id.auth_button)
+        authText = findViewById(R.id.auth_text)
         (navigation as BottomNavigationView).setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         enablePostAuthorizationFlows()
@@ -70,6 +71,13 @@ class AuthActivity : AppCompatActivity() {
 
     private fun enablePostAuthorizationFlows() {
         authState = restoreAuthState()
+        val currAuthState = authState
+        if (currAuthState != null && currAuthState.isAuthorized) {
+            authText.setText(R.string.already_authorized)
+        }
+        else {
+            authText.setText(R.string.please_authorize)
+        }
     }
 
     private fun handleAuthorizationResponse(intent: Intent) {
