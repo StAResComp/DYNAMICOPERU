@@ -1,0 +1,7 @@
+<resources>
+    <!--<string name="pescar_authorize_url" translatable="false">https://arts.st-andrews.ac.uk/pescar-beta/o/authorize/</string>-->
+    <!--<string name="pescar_token_url" translatable="false">https://arts.st-andrews.ac.uk/pescar-beta/o/token/</string>-->
+    <!--<string name="pescar_data_url" translatable="false">https://arts.st-andrews.ac.uk/pescar-beta/api/data/</string>-->
+    <!--<string name="pescar_auth_redirect_uri" translatable="false">uk.ac.standrews.pescar://oauth2callback</string>-->
+    <!--<string name="pescar_client_id" translatable="false">YOUR_CLIENT_ID_HERE</string>-->
+</resources>

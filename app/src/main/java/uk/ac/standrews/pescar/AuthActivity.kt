@@ -46,11 +46,11 @@ class AuthActivity : AppCompatActivity() {
 
         authBtn.setOnClickListener {view ->
             val serviceConfiguration = AuthorizationServiceConfiguration(
-                Uri.parse("https://arts.st-andrews.ac.uk/pescar-beta/o/authorize/") /* auth endpoint */,
-                Uri.parse("https://arts.st-andrews.ac.uk/pescar-beta/o/token/") /* token endpoint */
+                Uri.parse(getString(R.string.pescar_authorize_url)) /* auth endpoint */,
+                Uri.parse(getString(R.string.pescar_token_url)) /* token endpoint */
             )
-            val clientId = "gf7uqYxV5lk3izl1MQjjRHrzN21fbK1HMe69q4JG"
-            val redirectUri = Uri.parse("uk.ac.standrews.pescar://oauth2callback")
+            val clientId = getString(R.string.pescar_client_id)
+            val redirectUri = Uri.parse(getString(R.string.pescar_auth_redirect_uri))
             val builder = AuthorizationRequest.Builder(
                 serviceConfiguration,
                 clientId,
@@ -162,7 +162,6 @@ class AuthActivity : AppCompatActivity() {
 
     private fun checkIntent(intent: Intent?) {
         if (intent != null) {
-            Log.i("OAuth", "Intent is $intent, action is: ${intent.action}")
             val action = intent.action
             when (action) {
                 "uk.ac.standrews.pescar.HANDLE_AUTHORIZATION_RESPONSE" -> if (!intent.hasExtra(USED_INTENT)) {

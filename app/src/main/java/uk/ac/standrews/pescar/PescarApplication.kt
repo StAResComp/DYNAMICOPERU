@@ -115,10 +115,10 @@ class PescarApplication : Application() {
                         val json = JSONObject()
                         json.put("device", Settings.Secure.getString(this@PescarApplication.contentResolver, Settings.Secure.ANDROID_ID))
                         json.put("tows", towsJson)
-                        json.put("hauls", landedsJson)
+                        json.put("captures", landedsJson)
                         json.put("positions", positionsJson)
 
-                        val url = "https://arts.st-andrews.ac.uk/pescar-beta/api/data/"
+                        val url = getString(R.string.pescar_data_url)
 
                         val callback = object : VolleyCallback {
                             override fun onSuccess(result: JSONObject) {
@@ -129,7 +129,7 @@ class PescarApplication : Application() {
                                         towIds.add((towsJson[i] as JSONObject).getInt("id"))
                                     }
                                 }
-                                val landedsJson = result.getJSONArray("hauls")
+                                val landedsJson = result.getJSONArray("captures")
                                 val landedIds = arrayListOf<Int>()
                                 for (i in 0 until landedsJson.length()) {
                                     landedIds.add((landedsJson[i] as JSONObject).getInt("id"))
@@ -174,9 +174,11 @@ class PescarApplication : Application() {
                                         }
                                     }
                                 }
+                                Toast.makeText(baseContext, R.string.data_submission_success, Toast.LENGTH_LONG).show()
                             }
 
                             override fun onError(result: String?) {
+                                Log.e("POST", "Failure!")
                                 //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                             }
                         }
@@ -187,6 +189,7 @@ class PescarApplication : Application() {
                                 callback.onSuccess(json)
                             },
                             Response.ErrorListener { error ->
+                                Toast.makeText(baseContext, R.string.data_submission_failure, Toast.LENGTH_LONG).show()
                                 if (error.networkResponse != null && error.networkResponse.data != null) {
                                     callback.onError(VolleyError(String(error.networkResponse.data)).message)
                                 }

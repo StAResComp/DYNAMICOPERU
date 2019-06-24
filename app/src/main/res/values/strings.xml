@@ -29,11 +29,13 @@
     <string name="species_5">Species 5</string>
     <string name="species_6">Species 6</string>
 
-    <!-- Submission confirmation alert -->
+    <!-- Data submission -->
     <string name="confirm_submit_title">Confirm Submission</string>
     <string name="confirm_submit_message">Are you sure you want to submit data for this day? It can\'t be altered after
         this.
     </string>
+    <string name="data_submission_success">Data successfully submitted to server.</string>
+    <string name="data_submission_failure">Submission of data to server failed. Please try reauthorizing before attempting submission again.</string>
 
     <!-- Buttons -->
     <string name="submit">Submit</string>
@@ -53,10 +55,12 @@
     <!-- Archive -->
     <string name="title_activity_archive">Archive</string>
 
+    <!-- Auth -->
+    <string name="title_activity_auth">Authorization</string>
+
     <!-- Keys - no localisation needed -->
 
     <item type="id" name="landed_id_key"/>
     <item type="id" name="species_id_key"/>
-    <string name="title_activity_auth">AuthActivity</string>
 
 </resources>

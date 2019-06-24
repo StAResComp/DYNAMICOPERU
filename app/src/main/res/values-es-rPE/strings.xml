@@ -29,9 +29,12 @@
     <string name="species_5">Calamar</string>
     <string name="species_6">Guitarra</string>
 
-    <!-- Submission confirmation alert -->
+    <!-- Data submission -->
     <string name="confirm_submit_title">Confirmar envío</string>
     <string name="confirm_submit_message">Está seguro que desea enviar los datos? No podrá alterar datos después del envío</string>
+    <string name="data_submission_success">Datos enviados correctamente al servidor.</string>
+    <string name="data_submission_failure">Falló el envío de datos al servidor. Por favor, intente volver a autorizar antes de intentar el envío de nuevo.</string>
+
 
     <!-- Buttons -->
     <string name="submit">Submitir</string>
@@ -50,5 +53,8 @@
 
     <!-- Archive -->
     <string name="title_activity_archive">Archivo</string>
+
+    <!-- Auth -->
+    <string name="title_activity_auth">Autorización</string>
 
 </resources>
