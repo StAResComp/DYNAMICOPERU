@@ -1,4 +1,4 @@
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Build Status](https://travis-ci.org/StAResComp/DYNAMICOPERU.svg?branch=master)](https://travis-ci.org/StAResComp/DYNAMICOPERU)
+[![DOI](https://zenodo.org/badge/179690309.svg)](https://zenodo.org/badge/latestdoi/179690309) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Build Status](https://travis-ci.org/StAResComp/DYNAMICOPERU.svg?branch=master)](https://travis-ci.org/StAResComp/DYNAMICOPERU)
 
 # DYNAMICOPERU Pescar App
 
