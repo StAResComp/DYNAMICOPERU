@@ -79,7 +79,7 @@ class PescarApplication : Application() {
                     val positionsToUpload = trackDao.getUnuploadedPositions()
 
                     if (towsToUpload.isNotEmpty() || landedsToUpload.isNotEmpty() || positionsToUpload.isNotEmpty()) {
-                        val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
+                        val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
                         //df.timeZone = TimeZone.getTimeZone("UTC")
 
                         val towsJson = JSONArray()
