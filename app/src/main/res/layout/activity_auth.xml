@@ -33,12 +33,27 @@
                 android:layout_width="wrap_content"
                 android:text="@string/submit"/>
 
+            <TextView
+                    android:id="@+id/export_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/export_explanation"
+                    android:layout_marginTop="150dp" />
+
             <Button
                     android:id="@+id/export_button"
                     android:layout_gravity="center"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:text="@string/export"/>
+                    android:text="@string/export" />
+
+            <ProgressBar
+                    android:id="@+id/simpleProgressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="invisible" />
 
         </GridLayout>
 

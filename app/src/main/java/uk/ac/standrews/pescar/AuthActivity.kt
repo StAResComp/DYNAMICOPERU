@@ -36,6 +36,7 @@ import java.io.File
 import java.io.FileWriter
 import java.nio.Buffer
 import android.Manifest
+import android.widget.ProgressBar
 
 
 class AuthActivity : AppCompatActivity() {
@@ -86,12 +87,16 @@ class AuthActivity : AppCompatActivity() {
 
         exportBtn = findViewById(R.id.export_button)
         exportBtn.setOnClickListener{
+            val simpleProgressBar = findViewById<ProgressBar>(R.id.simpleProgressBar)
+            simpleProgressBar.visibility = View.VISIBLE
             if (ContextCompat.checkSelfPermission(this@AuthActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this@AuthActivity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE)
             }
             else {
                 this@AuthActivity.exportData()
             }
+            simpleProgressBar.visibility = View.INVISIBLE
+
         }
     }
 
@@ -217,7 +222,6 @@ class AuthActivity : AppCompatActivity() {
         if (!exportDir.exists()) {
             exportDir.mkdirs()
         }
-
         val db = AppDatabase.getAppDataBase(applicationContext).openHelper.readableDatabase
 
         val posFile = File(exportDir, "positions.csv")
