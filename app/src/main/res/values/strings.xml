@@ -60,6 +60,7 @@
     <string name="title_activity_auth">Account Linking</string>
     <string name="please_authorize">Click the button below to link this app to an account on the server.</string>
     <string name="already_authorized">This app is linked to an account on the server. Click the button below to refresh the link if necessary.</string>
+    <string name="export">Export all data</string>
 
     <!-- Keys - no localisation needed -->
 

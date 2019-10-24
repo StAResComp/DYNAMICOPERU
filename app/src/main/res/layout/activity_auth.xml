@@ -27,11 +27,18 @@
                     android:text="@string/please_authorize" />
 
             <Button
-                    android:id="@+id/auth_button"
+                android:id="@+id/auth_button"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/submit"/>
+
+            <Button
+                    android:id="@+id/export_button"
                     android:layout_gravity="center"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:text="@string/submit"/>
+                    android:text="@string/export"/>
 
         </GridLayout>
 

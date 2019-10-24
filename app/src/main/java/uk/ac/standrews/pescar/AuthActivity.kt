@@ -6,7 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 import kotlinx.android.synthetic.main.activity_auth.*
@@ -19,13 +19,23 @@ import net.openid.appauth.AuthorizationServiceConfiguration
 import net.openid.appauth.AuthorizationRequest
 import net.openid.appauth.AuthorizationService
 import android.app.PendingIntent
+import android.content.pm.PackageManager
+import android.database.Cursor
+import android.os.Environment
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationResponse
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_auth.navigation
 import kotlinx.android.synthetic.main.activity_today.*
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
+import java.nio.Buffer
+import android.Manifest
 
 
 class AuthActivity : AppCompatActivity() {
@@ -33,10 +43,13 @@ class AuthActivity : AppCompatActivity() {
     private val SHARED_PREFERENCES_NAME = "AuthStatePreference"
     private val AUTH_STATE = "AUTH_STATE"
     private val USED_INTENT = "USED_INTENT"
+    private val PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE = 6954
 
     private lateinit var authBtn: Button
     private lateinit var authText: TextView
     private var authState: AuthState? = null
+
+    private lateinit var exportBtn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,6 +82,16 @@ class AuthActivity : AppCompatActivity() {
             postAuthorizationIntent.action = action
             val pendingIntent = PendingIntent.getActivity(view.context, request.hashCode(), postAuthorizationIntent, 0)
             authorizationService.performAuthorizationRequest(request, pendingIntent)
+        }
+
+        exportBtn = findViewById(R.id.export_button)
+        exportBtn.setOnClickListener{
+            if (ContextCompat.checkSelfPermission(this@AuthActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this@AuthActivity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE)
+            }
+            else {
+                this@AuthActivity.exportData()
+            }
         }
     }
 
@@ -186,5 +209,46 @@ class AuthActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         checkIntent(intent)
+    }
+
+    private fun exportData() {
+
+        val exportDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "pescar_export_"+Calendar.getInstance().timeInMillis)
+        if (!exportDir.exists()) {
+            exportDir.mkdirs()
+        }
+
+        val db = AppDatabase.getAppDataBase(applicationContext).openHelper.readableDatabase
+
+        val posFile = File(exportDir, "positions.csv")
+        val writer = BufferedWriter(FileWriter(posFile))
+
+        val positions = db.query("SELECT * FROM position")
+        writer.write(implode(positions.columnNames))
+        while (positions.moveToNext()) {
+            writer.newLine()
+            writer.write(getRow(positions))
+        }
+        writer.close()
+        positions.close()
+    }
+
+    private fun implode(data:Array<String>, separator:String=","):String {
+        val sb = StringBuilder()
+        for (i in data.indices) {
+            sb.append(data[i])
+            if (i < data.size - 1) {
+                sb.append(separator)
+            }
+        }
+        return sb.toString()
+    }
+
+    private fun getRow(data: Cursor):String {
+        var dataArray = arrayOf<String>()
+        for (i in 0 until data.columnCount-1) {
+            dataArray += data.getString(i)
+        }
+        return implode(dataArray)
     }
 }
