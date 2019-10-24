@@ -9,7 +9,6 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-import kotlinx.android.synthetic.main.activity_auth.*
 import net.openid.appauth.AuthState
 import java.util.*
 import org.json.JSONException
@@ -30,14 +29,13 @@ import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_auth.navigation
-import kotlinx.android.synthetic.main.activity_today.*
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
-import java.nio.Buffer
 import android.Manifest
+import android.app.AlertDialog
+import android.media.MediaScannerConnection
 import android.widget.ProgressBar
-
 
 class AuthActivity : AppCompatActivity() {
 
@@ -197,6 +195,7 @@ class AuthActivity : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent) {
         checkIntent(intent)
+        super.onNewIntent(intent)
     }
 
     private fun checkIntent(intent: Intent?) {
@@ -235,6 +234,26 @@ class AuthActivity : AppCompatActivity() {
         }
         writer.close()
         positions.close()
+
+        MediaScannerConnection.scanFile(this@AuthActivity, arrayOf(posFile.absolutePath), arrayOf("text/csv"), null)
+
+        val alertDialog = AlertDialog.Builder(this@AuthActivity)
+        alertDialog.setTitle(getString(R.string.export_dialog_title))
+        alertDialog.setMessage(getString(R.string.export_dialog_message))
+        alertDialog.setPositiveButton(getString(R.string.email_now)) {_, _ ->
+            val emailIntent = Intent()
+            emailIntent.action = Intent.ACTION_SEND
+            emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            emailIntent.type = "vnd.android.cursor.dir/email"
+            emailIntent.putExtra(Intent.EXTRA_STREAM, GenericFileProvider.getUriForFile(
+                this, "uk.ac.standrews.pescar", posFile))
+            startActivityForResult(emailIntent, 101)
+        }
+        alertDialog.setNegativeButton(getString(R.string.cancel)) {dialog, _ ->
+            dialog.cancel()
+        }
+        alertDialog.show()
     }
 
     private fun implode(data:Array<String>, separator:String=","):String {

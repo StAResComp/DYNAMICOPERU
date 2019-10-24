@@ -59,7 +59,13 @@
     <string name="title_activity_auth">Vinculación de cuenta</string>
     <string name="please_authorize">Haga clic en el botón de abajo para vincular esta aplicación a una cuenta en el servidor.</string>
     <string name="already_authorized">Esta aplicación está vinculada a una cuenta en el servidor. Haga clic en el botón de abajo para actualizar el enlace si es necesario.</string>
-    <string name="export">Export all position data</string>
-    <string name="export_explanation">Use the button below to export all position data collected by the app to a file on your device.</string>
+
+    <!-- Export -->
+    <string name="export">Exportar todos los datos de posición</string>
+    <string name="export_explanation">Use el botón a continuación para exportar todos los datos de posición recopilados por la aplicación a un archivo en su dispositivo.</string>
+    <string name="export_dialog_title">Datos exportados</string>
+    <string name="export_dialog_message">Los datos de posición se han exportado a su carpeta de Descargas. ¿Desea enviar este archivo por correo electrónico ahora?</string>
+    <string name="email_now">Correo electrónico ahora</string>
+    <string name="cancel">Anular</string>
 
 </resources>

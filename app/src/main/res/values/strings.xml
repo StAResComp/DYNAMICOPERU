@@ -60,8 +60,15 @@
     <string name="title_activity_auth">Account Linking</string>
     <string name="please_authorize">Click the button below to link this app to an account on the server.</string>
     <string name="already_authorized">This app is linked to an account on the server. Click the button below to refresh the link if necessary.</string>
+
+    <!-- Export -->
     <string name="export">Export all position data</string>
     <string name="export_explanation">Use the button below to export all position data collected by the app to a file on your device.</string>
+    <string name="export_dialog_title">Data Exported</string>
+    <string name="export_dialog_message">Position data has been exported to your Downloads folder. Would you like to email this file now?</string>
+    <string name="email_now">Email now</string>
+    <string name="cancel">Cancel</string>
+
 
     <!-- Keys - no localisation needed -->
 
