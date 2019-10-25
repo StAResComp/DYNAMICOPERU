@@ -237,23 +237,31 @@ class AuthActivity : AppCompatActivity() {
 
         MediaScannerConnection.scanFile(this@AuthActivity, arrayOf(posFile.absolutePath), arrayOf("text/csv"), null)
 
+        confirmExport(posFile)
+    }
+
+    private fun confirmExport(file:File) {
         val alertDialog = AlertDialog.Builder(this@AuthActivity)
         alertDialog.setTitle(getString(R.string.export_dialog_title))
         alertDialog.setMessage(getString(R.string.export_dialog_message))
         alertDialog.setPositiveButton(getString(R.string.email_now)) {_, _ ->
-            val emailIntent = Intent()
-            emailIntent.action = Intent.ACTION_SEND
-            emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            emailIntent.type = "vnd.android.cursor.dir/email"
-            emailIntent.putExtra(Intent.EXTRA_STREAM, GenericFileProvider.getUriForFile(
-                this, "uk.ac.standrews.pescar", posFile))
-            startActivityForResult(emailIntent, 101)
+            emailFile(file)
         }
         alertDialog.setNegativeButton(getString(R.string.cancel)) {dialog, _ ->
             dialog.cancel()
         }
         alertDialog.show()
+    }
+
+    private fun emailFile(file:File) {
+        val emailIntent = Intent()
+        emailIntent.action = Intent.ACTION_SEND
+        emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        emailIntent.type = "vnd.android.cursor.dir/email"
+        emailIntent.putExtra(Intent.EXTRA_STREAM, GenericFileProvider.getUriForFile(
+            this, "uk.ac.standrews.pescar", file))
+        startActivityForResult(emailIntent, 101)
     }
 
     private fun implode(data:Array<String>, separator:String=","):String {
